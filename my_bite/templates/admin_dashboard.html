@@ -49,13 +49,13 @@
     <form action="/create_restaurant" method="POST">
         {% csrf_token %}
 
-        Name:
+         <p> Name: </p>
         <input type="text" name="name">
 
-        Description:
+       <p> Description: </p>
         <input type="text" name="description">
 
-        Owner ID:
+       <p> Owner ID:: </p> 
         <input type="number" name="owner_id">
 
         <button type="submit">Add</button>
