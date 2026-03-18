@@ -4,9 +4,9 @@ import re
 EMAIL_REGEX = re.compile(r'^[a-zA-Z0-9.+_-]+@[a-zA-Z0-9._-]+\.[a-zA-Z]+$')
 
 
-# =========================
+
 # USER MANAGER
-# =========================
+
 class UserManager(models.Manager):
 
     def register_validator(self, postData):
@@ -33,9 +33,9 @@ class UserManager(models.Manager):
         return errors
 
 
-# =========================
+
 # USER MODEL
-# =========================
+
 class User(models.Model):
 
     ROLE_CHOICES = (
@@ -50,7 +50,7 @@ class User(models.Model):
 
     role = models.CharField(max_length=10, choices=ROLE_CHOICES)
 
-    # 🔥 FUTURE (Social Login)
+    #  FUTURE (Social Login)
     provider = models.CharField(max_length=20, null=True, blank=True)
 
     created_at = models.DateTimeField(auto_now_add=True)
@@ -59,7 +59,6 @@ class User(models.Model):
     objects = UserManager()
 
 
-# =========================
 # RESTAURANT MODEL
 # =========================
 class Restaurant(models.Model):
@@ -75,13 +74,13 @@ class Restaurant(models.Model):
     description = models.TextField()
     average_rating = models.FloatField(null=True, blank=True)
     owner = models.ForeignKey(User, related_name="restaurants", on_delete=models.CASCADE)
-    # 🔥 Restaurant Status
+    # Restaurant Status
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='open')
 
-    # 🔥 Owner → Admin communication
+    # Owner → Admin communication
     note = models.TextField(null=True, blank=True)
 
-    # 🔥 Subscription System (simple)
+    #  Subscription System (simple)
     subscription_active = models.BooleanField(default=True)
     subscription_end_date = models.DateTimeField(null=True, blank=True)
     subscription_fee = models.DecimalField(max_digits=8, decimal_places=2, default=0)
@@ -90,9 +89,9 @@ class Restaurant(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
 
-# =========================
+
 # MENU ITEM MANAGER
-# =========================
+
 class MenuItemManager(models.Manager):
 
     def item_validator(self, postData):
@@ -110,9 +109,8 @@ class MenuItemManager(models.Manager):
         return errors
 
 
-# =========================
 # MENU ITEM MODEL
-# =========================
+
 class MenuItem(models.Model):
 
     STATUS_CHOICES = (
@@ -128,7 +126,7 @@ class MenuItem(models.Model):
 
     restaurant = models.ForeignKey(Restaurant, related_name="menu_items", on_delete=models.CASCADE)
 
-    # 🔥 Inventory Alert
+
     low_stock_threshold = models.IntegerField(default=5)
 
     created_at = models.DateTimeField(auto_now_add=True)
@@ -137,9 +135,9 @@ class MenuItem(models.Model):
     objects = MenuItemManager()
 
 
-# =========================
+
 # ORDER MANAGER
-# =========================
+
 class OrderManager(models.Manager):
 
     def order_validator(self, postData):
@@ -151,9 +149,9 @@ class OrderManager(models.Manager):
         return errors
 
 
-# =========================
+
 # ORDER MODEL
-# =========================
+
 class Order(models.Model):
 
     STATUS_CHOICES = (
@@ -175,10 +173,10 @@ class Order(models.Model):
     
     note = models.TextField(null=True, blank=True)
 
-    # 🔥 ETA SYSTEM
+
     expected_time = models.DateTimeField(null=True, blank=True)
 
-    # 🔥 Payment Method
+    #  Payment Method
     payment_method = models.CharField(
         max_length=10,
         choices=(
@@ -188,7 +186,7 @@ class Order(models.Model):
         default='cash'
     )
 
-    # 🔥 Customer Feedback
+    # Customer Feedback
     rating = models.IntegerField(null=True, blank=True)
     feedback = models.TextField(null=True, blank=True)
 

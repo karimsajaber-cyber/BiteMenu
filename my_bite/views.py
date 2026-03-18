@@ -174,7 +174,7 @@ def menu(request, restaurant_id):
     })
 
 
-# ✅ تحسين بسيط
+
 def my_orders(request):
     orders = Order.objects.filter(status__in=['pending', 'confirmed', 'preparing'])
     return render(request, 'my_orders.html', {'orders': orders})
@@ -192,14 +192,14 @@ def create_order(request):
                 messages.error(request, value)
             return redirect('restaurants')
 
-        # ✅ FIX: استخدام item_id بدل الاسم
+    
         item = MenuItem.objects.filter(id=request.POST['item_id']).first()
 
         if not item:
             messages.error(request, "Item not found")
             return redirect('restaurants')
 
-        # ✅ FIX: حماية من input غلط
+
         try:
             quantity = int(request.POST.get('quantity', 0))
         except:
@@ -216,7 +216,7 @@ def create_order(request):
 
         total_price = item.price * quantity
 
-        # ✅ إنشاء order
+
         Order.objects.create(
             restaurant=item.restaurant,
             menu_item=item,
@@ -225,7 +225,7 @@ def create_order(request):
             note=request.POST.get('note', '')
         )
 
-        # ✅ تحديث stock
+
         item.quantity -= quantity
 
         if item.quantity == 0:
@@ -238,7 +238,7 @@ def create_order(request):
     return redirect('restaurants')
 
 
-# ===== UPDATE ORDER =====
+
 def update_order(request, order_id):
 
     if 'user_id' not in request.session:
@@ -265,7 +265,7 @@ def update_order(request, order_id):
     return redirect('owner_dashboard')
 
 
-# ===== CANCEL ORDER (CUSTOMER) =====
+
 def cancel_order(request, order_id):
 
     if 'user_id' not in request.session:
@@ -287,7 +287,7 @@ def cancel_order(request, order_id):
     return redirect('restaurants')
 
 
-# ===== CANCEL ORDER (OWNER) =====
+
 def owner_cancel_order(request, order_id):
 
     if 'user_id' not in request.session:
@@ -306,7 +306,7 @@ def owner_cancel_order(request, order_id):
     return redirect('owner_dashboard')
 
 
-# ===== NOTE =====
+
 def update_restaurant_note(request):
 
     if 'user_id' not in request.session:

@@ -52,7 +52,7 @@
             <form action="/update_order/{{ order.id }}" method="POST">
                 {% csrf_token %}
 
-                <!-- 🔥 STATUS -->
+                <!-- STATUS -->
                 <select name="status">
                     <option value="pending">Pending</option>
                     <option value="confirmed">Confirmed</option>
