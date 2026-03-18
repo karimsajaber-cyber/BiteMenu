@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Add Item</title>
+</head>
+<body>
+
+<h1>Add Menu Item</h1>
+
+<!-- ERRORS -->
+{% if messages %}
+    {% for message in messages %}
+        <p style="color:red">{{ message }}</p>
+    {% endfor %}
+{% endif %}
+
+<form action="/create_item/{{ restaurant_id }}" method="POST">
+    {% csrf_token %}
+
+    Name:
+    <input type="text" name="name"><br>
+
+    Price:
+    <input type="number" step="0.01" name="price"><br>
+
+    Quantity:
+    <input type="number" name="quantity"><br>
+
+    <button type="submit">Add Item</button>
+</form>
+
+</body>
+</html>

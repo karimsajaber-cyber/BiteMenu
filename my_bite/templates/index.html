@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reg & Login</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+
+</head>
+
+<body>
+    <div class="app-content content">
+        <div class="content-wrapper">
+            <div class="content-body">
+                <div class="row mx-5 my-5">
+                    <div class="col-6">
+                        <form id="regesteration-form" action="/register" method="post">
+                            {% csrf_token %}
+                            <h1>Register Form</h1>
+                            <div class="mb-3 col-5 d-flex justify-content-around">
+                                <label for="first_name" class="col-6">First Name</label>
+                                <input type="text" name="first_name" id="first_name">
+                            </div>
+                            <div class="mb-3 col-5 d-flex justify-content-around">
+                                <label for="last_name" class="col-6">Last Name</label>
+                                <input type="text" name="last_name" id="last_name">
+                            </div>
+                            <div class="mb-3 col-5 d-flex justify-content-around">
+                                <label for="email" class="col-6">Email</label>
+                                <input type="email" name="email" id="email">
+                            </div>
+                            <div class="mb-3 col-5 d-flex justify-content-around">
+                                <label for="date" class="col-6">Date of Birth</label>
+                                <input type="date" name="date_of_birth" id="date" class="col-6">
+                            </div>
+
+                            <div class="mb-3 col-5 d-flex justify-content-around">
+                                <label for="password" class="col-6">Password.</label>
+                                <input type="password" name="password" id="password">
+                            </div>
+
+                            <div class="mb-3 col-5 d-flex justify-content-around">
+                                <label for="confrim_password" class="col-6">Confirm Password</label>
+                                <input type="password" name="confrim_password" id="confrim_password">
+                            </div>
+                            <input type="submit" value="Register" class="offset-3">
+                            {% for key,value in errors.items %}
+                                <p class="text-danger">{{ value }}</p>
+                            {% endfor %}
+
+                        </form>
+                    </div>
+                    <div class="col-6">
+                        <form id="regesteration-form" action="/login" method="post">
+                            {% csrf_token %}
+                            <h1>Login Form</h1>
+                            <div class="mb-3 col-5 d-flex justify-content-around">
+                                <label for="email" class="col-6">Email</label>
+                                <input type="email" name="email" id="email">
+                            </div>
+                            <div class="mb-3 col-5 d-flex justify-content-around">
+                                <label for="password" class="col-6">Password.</label>
+                                <input type="password" name="password" id="password">
+                            </div>
+                            <input type="submit" value="login" class="offset-3">
+
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+</body>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"
+    integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r"
+    crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.min.js"
+    integrity="sha384-G/EV+4j2dNv+tEPo3++6LCgdCROaejBqfUeNjuKAiuXbjrxilcCdDz6ZAVfHWe1Y"
+    crossorigin="anonymous"></script>
+
+</html>

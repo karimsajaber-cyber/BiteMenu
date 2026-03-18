@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Admin Dashboard</title>
+</head>
+
+<body>
+
+    <h1>Admin Dashboard</h1>
+
+    <h2>All Restaurants</h2>
+
+    <table border="1">
+        <tr>
+            <th>Name</th>
+            <th>Description</th>
+            <th>Owner</th>
+            <th>Actions</th>
+        </tr>
+
+        {% for restaurant in restaurants %}
+        <tr>
+            <td>{{ restaurant.name }}</td>
+            <td>{{ restaurant.description }}</td>
+            <td>{{ restaurant.owner.first_name }}</td>
+            <td>{{ restaurant.orders.count }}</td>
+            <td>
+                {% if restaurant.note %}
+                {{ restaurant.note }}
+                {% else %}
+                No notes
+                {% endif %}
+            </td>
+
+
+            <td>
+                <!-- DELETE -->
+                <a href="/delete_restaurant/{{ restaurant.id }}">Delete</a>
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+
+    ---
+
+    <h2>Add Restaurant</h2>
+
+    <form action="/create_restaurant" method="POST">
+        {% csrf_token %}
+
+        Name:
+        <input type="text" name="name">
+
+        Description:
+        <input type="text" name="description">
+
+        Owner ID:
+        <input type="number" name="owner_id">
+
+        <button type="submit">Add</button>
+    </form>
+
+</body>
+
+</html>

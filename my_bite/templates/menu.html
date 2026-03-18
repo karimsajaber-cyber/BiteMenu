@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Menu</title>
+</head>
+<body>
+
+<h1>{{ restaurant.name }} Menu</h1>
+
+{% for item in items %}
+    <div>
+        <h3>{{ item.name }}</h3>
+        <p>Price: {{ item.price }}</p>
+        <p>Status: {{ item.status }}</p>
+
+        {% if item.status == 'available' %}
+        <form action="/create_order" method="POST">
+            {% csrf_token %}
+
+            <!--  IMPORTANT -->
+            <input type="hidden" name="item_id" value="{{ item.id }}">
+
+            Quantity:
+            <input type="number" name="quantity">
+
+            Note:
+            <input type="text" name="note">
+
+            <button type="submit">Order</button>
+        </form>
+        {% else %}
+            <p>Sold Out</p>
+        {% endif %}
+    </div>
+{% endfor %}
+
+</body>
+</html>

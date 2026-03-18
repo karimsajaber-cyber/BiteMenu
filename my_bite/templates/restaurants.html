@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Restaurants</title>
+</head>
+<body>
+
+<h1>Restaurants</h1>
+
+{% for restaurant in restaurants %}
+    <div>
+        <h3>{{ restaurant.name }}</h3>
+        <p>{{ restaurant.description }}</p>
+
+        <a href="/menu/{{ restaurant.id }}">View Menu</a>
+    </div>
+{% endfor %}
+
+</body>
+</html>
