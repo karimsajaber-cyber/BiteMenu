@@ -60,7 +60,7 @@ class User(models.Model):
 
 
 # RESTAURANT MODEL
-# =========================
+
 class Restaurant(models.Model):
 
     STATUS_CHOICES = (
@@ -80,7 +80,7 @@ class Restaurant(models.Model):
     # Owner → Admin communication
     note = models.TextField(null=True, blank=True)
 
-    #  Subscription System (simple)
+    #  Subscription System
     subscription_active = models.BooleanField(default=True)
     subscription_end_date = models.DateTimeField(null=True, blank=True)
     subscription_fee = models.DecimalField(max_digits=8, decimal_places=2, default=0)
