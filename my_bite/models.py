@@ -32,7 +32,7 @@ class UserManager(models.Manager):
 
         return errors
 
-
+#Save Changes
 
 # USER MODEL
 
