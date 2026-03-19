@@ -73,7 +73,6 @@ def logout(request):
     return redirect('index')
 
 
-# ===== ADMIN DASHBOARD =====
 def admin_dashboard(request):
 
     if 'user_id' not in request.session:
@@ -99,13 +98,12 @@ def create_restaurant(request):
     return redirect('admin_dashboard')
 
 
-# ✅ FIX: إضافة delete restaurant
+
 def delete_restaurant(request, restaurant_id):
     Restaurant.objects.get(id=restaurant_id).delete()
     return redirect('admin_dashboard')
 
 
-# ===== OWNER DASHBOARD =====
 def owner_dashboard(request):
 
     if 'user_id' not in request.session:
@@ -128,12 +126,11 @@ def owner_dashboard(request):
     return render(request, 'owner_dashboard.html', context)
 
 
-# ===== ADD ITEM =====
 def add_menu_item(request, restaurant_id):
     return render(request, 'add_item.html', {'restaurant_id': restaurant_id})
 
 
-# ===== CREATE ITEM =====
+
 def create_menu_item(request, restaurant_id):
 
     if request.method == "POST":
@@ -157,7 +154,7 @@ def create_menu_item(request, restaurant_id):
     return redirect('owner_dashboard')
 
 
-# ===== CUSTOMER =====
+
 def restaurants(request):
     restaurants = Restaurant.objects.all()
     return render(request, 'restaurants.html', {'restaurants': restaurants})
@@ -180,7 +177,6 @@ def my_orders(request):
     return render(request, 'my_orders.html', {'orders': orders})
 
 
-# ===== CREATE ORDER =====
 def create_order(request):
 
     if request.method == "POST":
