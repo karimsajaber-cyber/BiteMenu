@@ -224,7 +224,8 @@ def create_order(request):
             total_price=total_price,
             note=request.POST.get('note', '')
         )
-
+        
+        messages.success(request, "Order placed successfully")  
 
         item.quantity -= quantity
 
@@ -259,7 +260,7 @@ def update_order(request, order_id):
 
         order.status = new_status
         order.save()
-
+        
         return redirect('owner_dashboard')
 
     return redirect('owner_dashboard')

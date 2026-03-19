@@ -6,17 +6,25 @@
 </head>
 
 <body>
+<!-- NavBar -->
+    <div>
+    <a href="/restaurants">Menu</a> |
+    <a href="/my_orders">My Orders</a> |
+    <a href="/logout">Logout</a>
+</div>
 
     <h1>Admin Dashboard</h1>
-
+    
     <h2>All Restaurants</h2>
-
+    <p>Total Restaurants: {{ restaurants|length }}</p>
     <table border="1">
         <tr>
             <th>Name</th>
             <th>Description</th>
             <th>Owner</th>
+            <th>Orders Count</th>
             <th>Actions</th>
+            
         </tr>
 
         {% for restaurant in restaurants %}

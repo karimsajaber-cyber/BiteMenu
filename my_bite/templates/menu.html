@@ -5,7 +5,20 @@
 </head>
 <body>
 
+<!-- NavBar -->
+    <div>
+    <a href="/restaurants">Menu</a> |
+    <a href="/my_orders">My Orders</a> |
+    <a href="/logout">Logout</a>
+</div>
+
+
 <h1>{{ restaurant.name }} Menu</h1>
+
+{% for message in messages %}
+    <p style="color:red">{{ message }}</p>
+{% endfor %}
+
 
 {% for item in items %}
     <div>
@@ -20,10 +33,10 @@
             <!--  IMPORTANT -->
             <input type="hidden" name="item_id" value="{{ item.id }}">
 
-            Quantity:
-            <input type="number" name="quantity">
+            <p>Quantity:</p>
+            <input type="number" name="quantity" min="1">
 
-            Note:
+            <p>Note:</p>
             <input type="text" name="note">
 
             <button type="submit">Order</button>

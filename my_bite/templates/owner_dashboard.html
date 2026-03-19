@@ -1,76 +1,102 @@
 <!DOCTYPE html>
 <html>
+
 <head>
     <title>Owner Dashboard</title>
 </head>
+
 <body>
 
-<h1>Owner Dashboard</h1>
-
-<a href="/add_item/{{ restaurant.id }}">Add New Item</a>
-<a href="/owner_cancel/{{ order.id }}">Cancel</a>
-
-
-<h2>Send Note to Admin</h2>
-
-<form action="/update_restaurant_note" method="POST">
-    {% csrf_token %}
-
-    <textarea name="note"></textarea>
-
-    <button type="submit">Send</button>
-</form>
+    <!-- NavBar -->
+    <div>
+        <a href="/restaurants">Menu</a> |
+        <a href="/my_orders">My Orders</a> |
+        <a href="/logout">Logout</a>
+    </div>
 
 
-<h2>Orders</h2>
+    <h1>Owner Dashboard</h1>
 
-<table border="1">
-    <tr>
-        <th>Item</th>
-        <th>Quantity</th>
-        <th>Status</th>
-        <th>Expected Time</th>
-        <th>Action</th>
-    </tr>
-
-    {% for order in orders %}
-    <tr>
-        <td>{{ order.menu_item.name }}</td>
-        <td>{{ order.quantity }}</td>
-        <td>{{ order.status }}</td>
-        <td><a href="/owner_cancel/{{ order.id }}">Cancel</a></td>
-
-        <td>
-            {% if order.expected_time %}
-                {{ order.expected_time }}
-            {% else %}
-                Not set
-            {% endif %}
-        </td>
-
-        <td>
-            <form action="/update_order/{{ order.id }}" method="POST">
-                {% csrf_token %}
-
-                <!-- STATUS -->
-                <select name="status">
-                    <option value="pending">Pending</option>
-                    <option value="confirmed">Confirmed</option>
-                    <option value="preparing">Preparing</option>
-                    <option value="ready">Ready</option>
-                    <option value="completed">Completed</option>
-                </select>
-
-                <!--  OWNER TIME (OPTIONAL) -->
-                <input type="datetime-local" name="expected_time">
-
-                <button type="submit">Update</button>
-            </form>
-        </td>
-    </tr>
+    {% for message in messages %}
+    <p style="color:green">{{ message }}</p>
     {% endfor %}
 
-</table>
+    <a href="/add_item/{{ restaurant.id }}">Add New Item</a>
+    <a href="/owner_cancel/{{ order.id }}">Cancel</a>
+
+
+    <h2>Send Note to Admin</h2>
+
+    <form action="/update_restaurant_note" method="POST">
+        {% csrf_token %}
+
+        <textarea name="note"></textarea>
+
+        <button type="submit">Send</button>
+    </form>
+
+
+    <h2>Orders</h2>
+
+    <table border="1">
+        <tr>
+            <th>Item</th>
+            <th>Quantity</th>
+            <th>Status</th>
+            <th>Expected Time</th>
+            <th>Action</th>
+        </tr>
+
+        {% for order in orders %}
+        <tr>
+            <td>{{ order.menu_item.name }}</td>
+            <td>{{ order.quantity }}</td>
+            <td>
+                {% if order.status == 'pending' %}
+                <span style="color:orange">Pending</span>
+                {% elif order.status == 'preparing' %}
+                <span style="color:blue">Preparing</span>
+                {% elif order.status == 'ready' %}
+                <span style="color:green">Ready</span>
+                {% else %}
+                {{ order.status }}
+                {% endif %}
+            </td>
+            
+            <td><a href="/owner_cancel/{{ order.id }}">Cancel</a></td>
+
+            <td>
+                {% if order.expected_time %}
+                {{ order.expected_time }}
+                {% else %}
+                Not set
+                {% endif %}
+            </td>
+
+            <td>
+                <form action="/update_order/{{ order.id }}" method="POST">
+                    {% csrf_token %}
+
+                    <!-- STATUS -->
+                    <select name="status">
+                        <option value="pending">Pending</option>
+                        <option value="confirmed">Confirmed</option>
+                        <option value="preparing">Preparing</option>
+                        <option value="ready">Ready</option>
+                        <option value="completed">Completed</option>
+                    </select>
+
+                    <!--  OWNER TIME (OPTIONAL) -->
+                    <input type="datetime-local" name="expected_time">
+
+                    <button type="submit">Update</button>
+                </form>
+            </td>
+        </tr>
+        {% endfor %}
+
+    </table>
 
 </body>
+
 </html>

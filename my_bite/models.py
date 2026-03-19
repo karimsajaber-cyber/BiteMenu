@@ -100,11 +100,20 @@ class MenuItemManager(models.Manager):
         if len(postData['name']) < 2:
             errors['name'] = "Item name must be at least 2 characters"
 
-        if float(postData['price']) <= 0:
-            errors['price'] = "Price must be greater than 0"
-
-        if int(postData['quantity']) < 0:
-            errors['quantity'] = "Quantity cannot be negative"
+        try:
+            price = float(postData['price'])
+            if price <= 0:
+                errors['price'] = "Price must be greater than 0"
+        except:
+            errors['price'] = "Invalid price"
+            
+            
+        try:
+            quantity = int(postData['quantity'])
+            if quantity < 0:
+                errors['quantity'] = "Quantity cannot be negative"
+        except:
+            errors['quantity'] = "Invalid quantity"
 
         return errors
 
@@ -143,9 +152,13 @@ class OrderManager(models.Manager):
     def order_validator(self, postData):
         errors = {}
 
-        if int(postData['quantity']) <= 0:
-            errors['quantity'] = "Quantity must be greater than zero"
-
+        try:
+            quantity = int(postData['quantity'])
+            if quantity <= 0:
+                errors['quantity'] = "Quantity must be greater than zero"
+        except:
+                errors['quantity'] = "Invalid quantity"
+                
         return errors
 
 
@@ -167,7 +180,7 @@ class Order(models.Model):
 
     menu_item = models.ForeignKey(MenuItem, related_name="orders", on_delete=models.CASCADE)
 
-    quantity = models.IntegerField()
+    quantity = models.PositiveIntegerField()
 
     total_price = models.DecimalField(max_digits=10, decimal_places=2)
     

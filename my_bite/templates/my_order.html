@@ -1,22 +1,35 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>My_order</title>
 </head>
-<body>
-    <h1>My Orders</h1>
 
-{% for order in orders %}
+<body>
+<!-- NavBar -->
+    <div>
+    <a href="/restaurants">Menu</a> |
+    <a href="/my_orders">My Orders</a> |
+    <a href="/logout">Logout</a>
+</div>
+
+    <h1>My Orders</h1>
+    {% if not orders %}
+    <p>No orders yet</p>
+
+    {% endif %}
+    {% for order in orders %}
     <div>
         <p>{{ order.menu_item.name }}</p>
         <p>{{ order.status }}</p>
 
         {% if order.status == 'pending' %}
-            <a href="/cancel_order/{{ order.id }}">Cancel</a>
+        <a href="/cancel_order/{{ order.id }}">Cancel</a>
         {% endif %}
     </div>
-{% endfor %}
+    {% endfor %}
 </body>
+
 </html>
