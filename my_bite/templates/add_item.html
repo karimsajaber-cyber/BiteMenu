@@ -17,14 +17,14 @@
 <form action="/create_item/{{ restaurant_id }}" method="POST">
     {% csrf_token %}
 
-    Name:
-    <input type="text" name="name"><br>
+   <p> Name: </p> 
+    <input type="text" name="name">
 
-    Price:
-    <input type="number" step="0.01" name="price"><br>
+    <p> Price: </p> 
+    <input type="number" step="0.01" name="price">
 
-    Quantity:
-    <input type="number" name="quantity"><br>
+    <p> Quantity: </p> 
+    <input type="number" name="quantity">
 
     <button type="submit">Add Item</button>
 </form>
