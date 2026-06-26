@@ -186,9 +186,9 @@ BiteMenu
 
 ![Owner Dashboard](docs/screenshots/owner-dashboard.png)
 
-## Restaurant Page
+## Menu Page
 
-![Restaurant Page](docs/screenshots/restaurant-page.png)
+![Menu Page](docs/screenshots/restaurant-page.png)
 
 ## Voice Ordering
 
