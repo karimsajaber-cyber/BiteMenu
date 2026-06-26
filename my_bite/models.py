@@ -1,5 +1,7 @@
 from django.db import models
 import re
+import uuid
+
 
 EMAIL_REGEX = re.compile(r'^[a-zA-Z0-9.+_-]+@[a-zA-Z0-9._-]+\.[a-zA-Z]+$')
 
@@ -74,6 +76,8 @@ class Restaurant(models.Model):
     description = models.TextField()
     average_rating = models.FloatField(null=True, blank=True)
     owner = models.ForeignKey(User, related_name="restaurants", on_delete=models.CASCADE)
+    # Random code
+    public_token = models.CharField(max_length=50, blank=True, null=True) 
     # Restaurant Status
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='open')
 
@@ -128,6 +132,7 @@ class MenuItem(models.Model):
     )
 
     name = models.CharField(max_length=100)
+    voice_keywords = models.CharField(max_length=255, blank=True, default='')
     price = models.DecimalField(max_digits=8, decimal_places=2)
     quantity = models.IntegerField()
 
@@ -142,6 +147,27 @@ class MenuItem(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     objects = MenuItemManager()
+
+
+class MenuOptionGroup(models.Model):
+
+    item = models.ForeignKey(MenuItem, related_name="option_groups", on_delete=models.CASCADE)
+    name = models.CharField(max_length=100)
+    is_required = models.BooleanField(default=False)
+    allow_multiple = models.BooleanField(default=False)
+
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+
+class MenuOption(models.Model):
+
+    group = models.ForeignKey(MenuOptionGroup, related_name="options", on_delete=models.CASCADE)
+    name = models.CharField(max_length=100)
+    price_delta = models.DecimalField(max_digits=8, decimal_places=2, default=0)
+
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
 
 
@@ -185,7 +211,9 @@ class Order(models.Model):
     total_price = models.DecimalField(max_digits=10, decimal_places=2)
     
     note = models.TextField(null=True, blank=True)
-
+    
+    customer_session = models.CharField(max_length=100, null=True, blank=True)
+    table_number = models.IntegerField(null=True)
 
     expected_time = models.DateTimeField(null=True, blank=True)
 
@@ -209,3 +237,19 @@ class Order(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     objects = OrderManager()
+
+
+class OrderOption(models.Model):
+
+    order = models.ForeignKey(Order, related_name="selected_options", on_delete=models.CASCADE)
+    option_group_name = models.CharField(max_length=100)
+    option_name = models.CharField(max_length=100)
+    option_price = models.DecimalField(max_digits=8, decimal_places=2, default=0)
+
+    created_at = models.DateTimeField(auto_now_add=True)
+
+class PasswordResetToken(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    token = models.UUIDField(default=uuid.uuid4, unique=True)
+
+    created_at = models.DateTimeField(auto_now_add=True)

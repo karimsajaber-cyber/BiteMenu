@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Add Restaurant</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
+</head>
+
+<body>
+
+
+    <h1>Add Restaurant</h1>
+
+    {% for message in messages %}
+    <p style="color:red">{{ message }}</p>
+    {% endfor %}
+
+    <a href="/admin_dashboard">⬅ Back</a>
+
+    <hr>
+
+    <form action="/create_restaurant" method="POST">
+    {% csrf_token %}
+
+    <!-- Restaurant Name -->
+    <label>Restaurant Name:</label>
+    <input type="text" name="name">
+
+    <br><br>
+
+    <!-- Description -->
+    <label>Description:</label>
+    <input type="text" name="description">
+
+    <br><br>
+
+    <!-- Owner Name -->
+    <label>Owner Name:</label>
+    <input type="text" name="owner_name">
+
+    <br><br>
+
+    <!-- Owner Email -->
+    <label>Owner Email:</label>
+    <input type="email" name="owner_email">
+
+    <br><br>
+
+    <!-- Owner Password -->
+    <label>Owner Password:</label>
+    <input type="password" name="owner_password">
+
+    <br><br>
+
+    <button type="submit">➕ Create Restaurant</button>
+</form>
+
+</body>
+
+</html>

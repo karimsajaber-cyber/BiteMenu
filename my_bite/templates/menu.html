@@ -1,53 +1,405 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
+
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Menu</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Cormorant+Garamond:wght@600;700&display=swap"
+        rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Cormorant+Garamond:wght@600;700&display=swap"
+        rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet">
+    {% load static %}
+    <!-- Voice JS reads this token for /voice_order/ and /tts/ POST calls. -->
+    <meta name="csrf-token" content="{{ csrf_token }}">
+    <meta name="restaurant-id" content="{{ restaurant.id }}">
+    <meta name="available-items-count" content="{{ available_items_count|default:0 }}">
+    <link rel="stylesheet" href="{% static 'css/menu.css' %}">
 </head>
+
 <body>
 
-<!-- NavBar -->
-    <div>
-    <a href="/restaurants">Menu</a> |
-    <a href="/my_orders">My Orders</a> |
-    <a href="/logout">Logout</a>
-</div>
 
 
-<h1>{{ restaurant.name }} Menu</h1>
+    <div class="page-shell">
+        <header class="topbar">
 
-{% for message in messages %}
-    <p style="color:red">{{ message }}</p>
-{% endfor %}
+            <!-- LEFT -->
+            <div class="left-section">
+                <div class="brand">
+                    <div class="brand-mark">BM</div>
+                    <div class="brand-copy">
+                        <span>Menu space</span>
+                        <strong>{{ restaurant.name }}</strong>
+                    </div>
+                </div>
+
+                <!-- Facebook -->
+                <!-- <div class="social">
+                    <span>Follow us</span>
+                    <a href="https://facebook.com/yourpage" target="_blank">
+                        <i class="fab fa-facebook-f"></i>
+                    </a>
+                </div> -->
+            </div>
+
+            <!-- CENTER -->
+            <!-- <h3 class="menu-title">MENU PAGE</h3> -->
+
+            <!-- RIGHT  -->
+            <div class="right-space"></div>
 
 
-{% for item in items %}
-    <div>
-        <h3>{{ item.name }}</h3>
-        <p>Price: {{ item.price }}</p>
-        <p>Status: {{ item.status }}</p>
 
-        {% if item.status == 'available' %}
-        <form action="/create_order" method="POST">
-            {% csrf_token %}
+            <nav class="nav-links" aria-label="Primary navigation">
 
-            <!--  IMPORTANT -->
-            <input type="hidden" name="item_id" value="{{ item.id }}">
+                {% if not request.session.customer_mode %}
 
-            <p>Quantity:</p>
-            <input type="number" name="quantity" min="1">
+                {% if request.session.role == 'owner' or request.session.role == 'admin' %}
+                <a href="/owner_dashboard">My Restaurant</a>
+                {% else %}
+                <a href="/restaurants">Restaurants</a>
+                {% endif %}
 
-            <p>Note:</p>
+                <a href="/my_orders">My Orders</a>
+                <a href="/logout">Logout</a>
 
+                {% endif %}
 
-            <input type="text" name="note">
+            </nav>
+        </header>
 
-            <button type="submit">Order</button>
-        </form>
-        {% else %}
-            <p>Sold Out</p>
+        <!-- {% if request.session.customer_mode %}
+        <section class="customer-mode">
+            <div class="customer-mode-copy">
+                <div class="section-kicker">Customer Mode</div>
+                <p>Exit using the restaurant PIN when you are ready to return to the owner controls.</p>
+            </div>
+            <form action="/exit_customer_mode" method="POST">
+                {% csrf_token %}
+                <input type="password" name="pin" placeholder="Enter PIN">
+                <button class="button secondary" type="submit">Exit Customer Mode</button>
+            </form>
+        </section>
+        {% endif %} -->
+
+        <section class="hero">
+            <div class="eyebrow">Restaurant Menu</div>
+
+            <h1>
+                Order Faster <br>
+                <span class="h1">Eat Happier</span>
+            </h1>
+
+            <p class="hero-copy">
+                Browse the menu, customize your meal, <br>
+                <span class="hero-span">and place your order in seconds</span>
+            </p>
+
+            <div class="hero-meta">
+                <span class="restaurant-id">{{ restaurant.name }}</span>
+                <span class="hero-chip">Voice Ordering Available</span>
+            </div>
+        </section>
+
+        {% if messages %}
+        <div class="message-list">
+            {% for message in messages %}
+            <div class="message">{{ message }}</div>
+            {% endfor %}
+        </div>
         {% endif %}
-    </div>
-{% endfor %}
 
+        <section class="dashboard-grid">
+            <aside class="promo-story" aria-label="BiteMenu dining experience">
+                <div class="promo-story__eyebrow">
+                    AI-Powered Restaurant Ordering
+                </div>
+
+                <h2 class="promo-story__title">
+                    <span class="headline-line">Speak your order</span>
+                    <span class="headline-line">We'll handle it</span>
+                    <span class="gradient-word">Naturally</span>
+                </h2>
+
+                <p>
+                    Turn every menu into a voice-powered ordering experience that feels natural, fast, and effortless
+                </p>
+                <div class="hero-actions">
+                    <a href="#voice-demo" class="btn-primary">
+                        Try Voice Ordering
+                    </a>
+
+                    <a href="#demo" class="btn-secondary">
+                        Watch Demo
+                    </a>
+                </div>
+            </aside>
+
+            <div class="hero-visual" aria-hidden="true"></div>
+
+            <article class="panel">
+                <div class="menu-top-layout">
+                    <div>
+                        <div class="section-kicker">Manual Ordering</div>
+
+                        <div class="section-title">
+                            <h2>Choose from the live menu</h2>
+                            <p>Order simply and clearly</p>
+                        </div>
+                    </div>
+                    <div class="table-box">
+                        {% if request.session.table_number %}
+                        <p>Table: <strong>{{ request.session.table_number }}</strong></p>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <div class="menu-grid">
+                    {% for item in items %}
+                    {% if item.status == 'available' %}
+                    <details class="menu-card menu-card--available" {% if errors %}open{% endif %}>
+                        <summary class="menu-card-summary">
+                            <div class="menu-card-header">
+                                <div>
+                                    <h3>{{ item.name }}</h3>
+                                </div>
+                                <span class="price-pill">From ${{ item.price }}</span>
+                            </div>
+
+                            <div class="menu-card-summary-row">
+                                <span class="status-pill">{{ item.status }}</span>
+                            </div>
+
+                            <div class="menu-card-expand-cta">
+                                <div class="cta-border">
+                                    <svg class="cta-path-svg" aria-hidden="true">
+                                        <rect class="cta-path" />
+
+                                        <g class="cta-worm">
+                                            <ellipse class="cta-worm-soft" cx="0" cy="0" rx="56" ry="16" />
+                                            <ellipse class="cta-worm-core" cx="0" cy="0" rx="40" ry="2.3" />
+                                        </g>
+
+                                        <defs>
+                                            <linearGradient class="cta-worm-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                                                <stop offset="0%" stop-color="#FFF1C8" stop-opacity="0" />
+                                                <stop offset="22%" stop-color="#FFF1C8" stop-opacity="0.2" />
+                                                <stop offset="50%" stop-color="#F6D27A" stop-opacity="0.98" />
+                                                <stop offset="78%" stop-color="#FFF1C8" stop-opacity="0.2" />
+                                                <stop offset="100%" stop-color="#FFF1C8" stop-opacity="0" />
+                                            </linearGradient>
+
+                                            <filter class="cta-worm-soft-blur" x="-180%" y="-1200%" width="460%" height="2500%">
+                                                <feGaussianBlur stdDeviation="7.2" />
+                                            </filter>
+
+                                            <filter class="cta-worm-core-blur" x="-120%" y="-800%" width="340%" height="1700%">
+                                                <feGaussianBlur stdDeviation="1.35" />
+                                            </filter>
+
+                                            <mask
+                                                class="cta-worm-mask"
+                                                maskUnits="userSpaceOnUse"
+                                                maskContentUnits="userSpaceOnUse"
+                                                style="mask-type: alpha;"
+                                            >
+                                                <rect
+                                                    class="cta-worm-mask-path"
+                                                    fill="none"
+                                                    stroke="#ffffff"
+                                                    stroke-width="10"
+                                                    stroke-linecap="round"
+                                                    stroke-linejoin="round"
+                                                    vector-effect="non-scaling-stroke"
+                                                />
+                                            </mask>
+                                        </defs>
+
+                                    </svg>
+
+                                    <span>See more and order in seconds</span>
+                                </div>
+                                <span class="menu-card-expand-arrow" aria-hidden="true">
+                                    <svg viewBox="0 0 24 24" width="18" height="18">
+                                        <path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" stroke-width="2.4"
+                                            stroke-linecap="round" stroke-linejoin="round" />
+                                    </svg>
+                                </span>
+                            </div>
+                        </summary>
+
+                        <div class="menu-card-body">
+                            <form class="order-form" action="/create_order" method="POST">
+                                {% csrf_token %}
+
+                                <input type="hidden" name="item_id" value="{{ item.id }}">
+                                <input type="hidden" name="restaurant_id" value="{{ restaurant.id }}">
+
+                                {% if item.option_groups.all %}
+                                <div class="item-options">
+                                    {% for group in item.option_groups.all %}
+                                    <div class="order-option-group">
+                                        <div class="order-option-title">
+                                            <strong>{{ group.name }}</strong>
+                                            {% if group.is_required %}
+                                            <span>Required</span>
+                                            {% else %}
+                                            <span>Optional</span>
+                                            {% endif %}
+                                        </div>
+
+                                        <div class="order-option-list">
+                                            {% if group.allow_multiple %}
+                                            {% for option in group.options.all %}
+                                            <label class="order-option-choice">
+                                                <input type="checkbox" name="option_group_{{ group.id }}"
+                                                    value="{{ option.id }}" data-price="{{ option.price_delta }}">
+                                                <span>{{ option.name }}</span>
+                                                <small>+${{ option.price_delta }}</small>
+                                            </label>
+                                            {% endfor %}
+                                            {% else %}
+                                            {% if not group.is_required %}
+                                            <label class="order-option-choice">
+                                                <input type="radio" name="option_group_{{ group.id }}" value=""
+                                                    data-price="0" checked>
+                                                <span>No {{ group.name }}</span>
+                                                <small>+$0.00</small>
+                                            </label>
+                                            {% endif %}
+
+                                            {% for option in group.options.all %}
+                                            <label class="order-option-choice">
+                                                <input type="radio" name="option_group_{{ group.id }}"
+                                                    value="{{ option.id }}" data-price="{{ option.price_delta }}" {% if group.is_required %}required{% endif %}>
+                                                    
+                                                <span>{{ option.name }}</span>
+                                                <small>+${{ option.price_delta }}</small>
+                                            </label>
+                                            {% endfor %}
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                    {% endfor %}
+                                </div>
+                                {% endif %}
+
+                                <div class="field-group">
+                                    <label>Quantity</label>
+                                    <input type="number" name="quantity" min="1">
+                                </div>
+
+                                <div class="item-total-preview" data-base-price="{{ item.price }}">
+                                    Unit price: $<span>{{ item.price }}</span>
+                                </div>
+
+                                <div class="field-group">
+                                    <label>Note</label>
+                                    <input type="text" name="note" placeholder="Special instructions, if needed">
+                                </div>
+
+                                <button class="button primary" type="submit">Order</button>
+                            </form>
+
+                            {% if errors %}
+                            {% for key, value in errors.items %}
+                            {% if key == item.id %}
+                            <p style="color:red;">
+                                {{ value }}
+                            </p>
+                            {% endif %}
+                            {% endfor %}
+                            {% endif %}
+                        </div>
+                    </details>
+                    {% else %}
+                    <div class="menu-card menu-card--soldout">
+                        <div class="menu-card-header">
+                            <div>
+                                <h3>{{ item.name }}</h3>
+                            </div>
+                            <span class="price-pill">From ${{ item.price }}</span>
+                        </div>
+
+                        <div class="menu-card-summary-row">
+                            <span class="status-pill sold-out">{{ item.status }}</span>
+                            <span class="menu-card-fold-hint">Currently unavailable</span>
+                        </div>
+
+                        <div class="sold-out-note">Sold Out</div>
+                    </div>
+                    {% endif %}
+                    {% endfor %}
+                </div>
+            </article>
+
+            <!-- Voice bubble: keep these ids synced with static/menu.js. -->
+            <div class="voice-card">
+                <button id="micBtn" class="mic-btn">🎤</button>
+
+                <div class="voice-text" id="responseText">
+                    احكي طلبك
+                </div>
+
+                <audio id="audioPlayer"></audio>
+            </div>
+            <article class="panel">
+                <div class="section-kicker">Your Orders</div>
+                <div class="section-title">
+                    <h2>Your current orders</h2>
+                    <p>Track what you’ve ordered from this restaurant</p>
+                </div>
+
+                <div class="orders-list" id="orders-container">
+                    {% if orders %}
+                    {% for order in orders %}
+                    <div class="order-card">
+                        <div class="order-header">
+                            <h3>{{ order.menu_item.name }}</h3>
+                            <span class="status-pill">{{ order.status }}</span>
+                        </div>
+
+                        <p>Quantity: {{ order.quantity }}</p>
+
+                        {% if order.selected_options.all %}
+                        <div class="selected-options">
+                            {% for option in order.selected_options.all %}
+                            <span>{{ option.option_group_name }}: {{ option.option_name }} (+${{ option.option_price
+                                }})</span>
+                            {% endfor %}
+                        </div>
+                        {% endif %}
+
+                        {% if order.expected_time %}
+                        <p class="order-time">
+                            Ready by: {{ order.expected_time }}
+                        </p>
+                        {% endif %}
+
+                        {% if order.note %}
+                        <p class="order-note">Note: {{ order.note }}</p>
+                        {% endif %}
+                    </div>
+                    {% endfor %}
+                    {% else %}
+                    <p id="no-orders-text">No orders yet</p>
+                    {% endif %}
+                </div>
+            </article>
+        </section>
+    </div>
+
+
+    {% load static %}
+
+    <script src="{% static 'menu.js' %}"></script>
 </body>
+
 </html>

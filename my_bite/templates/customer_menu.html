@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    {% load static %}
+    <!-- Voice JS reads this token for /voice_order/ and /tts/ POST calls. -->
+    <meta name="csrf-token" content="{{ csrf_token }}">
+    <meta name="restaurant-id" content="{{ restaurant.id }}">
+    <meta name="available-items-count" content="{{ available_items_count|default:0 }}">
+    <link rel="stylesheet" href="{% static 'css/menu.css' %}">
+</head>
+<body>
+    <h1>{{ restaurant.name }}</h1>
+
+{% for item in items %}
+    <p>{{ item.name }} - {{ item.price }}</p>
+{% endfor %}
+
+<!-- Voice bubble: keep these ids synced with static/menu.js. -->
+<div class="voice-card">
+    <button id="micBtn" class="mic-btn">🎤</button>
+    <div class="voice-text" id="responseText">احكي طلبك</div>
+    <audio id="audioPlayer"></audio>
+</div>
+<script src="{% static 'menu.js' %}"></script>
+</body>
+</html>

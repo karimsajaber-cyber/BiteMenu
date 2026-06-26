@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Edit Item</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
+</head>
+<body>
+
+    <h1>Edit Item</h1>
+
+    <form action="/update_item/{{ item.id }}" method="POST">
+        {% csrf_token %}
+
+        <label>Name:</label>
+        <input type="text" name="name" value="{{ item.name }}" style = "display: block;">
+
+
+        <label>Price:</label>
+        <input type="number" name="price" value="{{ item.price }}" style = "display: block;">
+
+        <label>Quantity:</label>
+        <input type="number" name="quantity" value="{{ item.quantity }}" style = "display: block;">
+
+        <button type="submit">Update</button>
+    </form>
+
+</body>
+</html>

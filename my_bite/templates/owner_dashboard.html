@@ -1,102 +1,2199 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Owner Dashboard</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Cormorant+Garamond:wght@600;700&display=swap"
+        rel="stylesheet">
+    {% load static %}
+    <style>
+        :root {
+            --bg: #f4f1ea;
+            --bg-soft: #fbf9f4;
+            --surface: rgba(251, 249, 244, 0.9);
+            --surface-strong: #fefcf8;
+            --text: #2e312c;
+            --muted: #6e736a;
+            --line: rgba(100, 107, 96, 0.16);
+            --line-strong: rgba(100, 107, 96, 0.28);
+            --accent: #67807a;
+            --accent-deep: #4d635e;
+            --accent-soft: #dde6e1;
+            --sage: #929a7f;
+            --sage-soft: #e7eadc;
+            --gold: #c8ad7a;
+            --danger: #b0786f;
+            --shadow: 0 22px 56px rgba(74, 75, 66, 0.12);
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: "Manrope", sans-serif;
+            margin: 0;
+            padding: 20px;
+            overflow-x: hidden;
+
+            background-image: url("{% static 'images/restaurnat.jpg' %}");
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+        }
+
+        .owner {
+            font-size: 60px
+        }
+
+
+        body::before {
+            content: "";
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            background-image: linear-gradient(rgba(255, 255, 255, 0.14) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 255, 255, 0.14) 1px, transparent 1px);
+            background-size: 72px 72px;
+            mask-image: linear-gradient(180deg, rgba(0, 0, 0, 0.28), transparent 78%);
+        }
+
+        a {
+            color: inherit;
+            text-decoration: none;
+        }
+
+        .page-shell {
+            width: min(1180px, calc(100% - 32px));
+            margin: 0 auto;
+            padding: 26px 0 48px;
+            overflow-x: clip;
+        }
+
+        .topbar,
+        .hero,
+        .card,
+        .table-shell {
+            background: var(--surface);
+            border: 1px solid var(--line);
+            box-shadow: var(--shadow);
+            backdrop-filter: blur(10px);
+        }
+
+        .topbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 20px;
+            padding: 14px 18px;
+            border-radius: 24px;
+            margin-bottom: 18px;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .brand-mark {
+            width: 46px;
+            height: 46px;
+            border-radius: 16px;
+            display: grid;
+            place-items: center;
+            background: linear-gradient(135deg, var(--accent) 0%, var(--gold) 100%);
+            color: #f8fffb;
+            font-size: 1.2rem;
+            font-weight: 800;
+            letter-spacing: 0.08em;
+        }
+
+        .brand-copy span,
+        .eyebrow,
+        .metric-label,
+        .section-kicker,
+        .table-meta,
+        .hint,
+        .pill {
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+        }
+
+        .brand-copy span,
+        .metric-label,
+        .table-meta,
+        .hint {
+            font-size: 0.72rem;
+            color: var(--muted);
+        }
+
+        .brand-copy strong {
+            display: block;
+            font-size: 1rem;
+        }
+
+        .nav-links {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .nav-links a {
+            padding: 10px 14px;
+            border-radius: 999px;
+            color: var(--muted);
+            transition: transform 180ms ease, background-color 180ms ease, color 180ms ease;
+        }
+
+        .nav-links a:hover,
+        .nav-links a:focus-visible {
+            background: rgba(214, 232, 225, 0.84);
+            color: var(--accent-deep);
+            transform: translateY(-1px);
+            outline: none;
+        }
+
+        .hero {
+            position: relative;
+            overflow: hidden;
+            border-radius: 34px;
+            padding: clamp(28px, 5vw, 44px);
+            padding-right: clamp(340px, 38vw, 500px);
+            margin-bottom: 22px;
+        }
+
+        .hero>* {
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero::before {
+            content: "";
+            position: absolute;
+            top: 24px;
+            right: 24px;
+            bottom: 24px;
+            width: clamp(280px, 32vw, 440px);
+            border-radius: 22px;
+            background: linear-gradient(180deg, rgba(255, 255, 255, 0.18), rgba(255, 255, 255, 0.02)),
+            url("{% static 'images/restaurnat.jpg' %}") center / cover no-repeat;
+            box-shadow: 0 18px 34px rgba(74, 75, 66, 0.14);
+            border: 1px solid rgba(255, 255, 255, 0.34);
+            pointer-events: none;
+        }
+
+        .hero::after {
+            content: "";
+            position: absolute;
+            inset: auto -80px -100px auto;
+            width: 260px;
+            height: 260px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(212, 177, 105, 0.3) 0%, rgba(212, 177, 105, 0) 70%);
+        }
+
+        .eyebrow,
+        .section-kicker,
+        .pill {
+            font-size: 0.74rem;
+            font-weight: 700;
+        }
+
+        .eyebrow {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 8px 12px;
+            border-radius: 999px;
+            color: var(--accent-deep);
+            background: rgba(214, 232, 225, 0.82);
+        }
+
+        h1,
+        h2 {
+            margin: 0;
+        }
+
+        h1 {
+            margin-top: 18px;
+            font-family: "Cormorant Garamond", serif;
+            font-size: clamp(3rem, 6vw, 5.4rem);
+            line-height: 0.92;
+            letter-spacing: -0.04em;
+            max-width: 11ch;
+        }
+
+        .hero p {
+            margin: 16px 0 0;
+            max-width: 58ch;
+            color: var(--muted);
+            font-size: 1rem;
+            line-height: 1.7;
+        }
+
+        .qr-links-title {
+            margin: 22px 0 12px;
+            font-size: 1.15rem;
+        }
+
+        .qr-links {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            align-items: center;
+            margin-left: clamp(18px, 3vw, 44px);
+        }
+
+        .qr-links a {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 44px;
+            padding: 0 16px;
+            border-radius: 999px;
+            background: rgba(250, 253, 250, 0.82);
+            border: 1px solid var(--line);
+            color: var(--accent-deep);
+            font-size: 1rem;
+            font-weight: 700;
+            transition: transform 180ms ease, background-color 180ms ease, color 180ms ease;
+        }
+
+        .qr-links a:hover,
+        .qr-links a:focus-visible {
+            background: rgba(214, 232, 225, 0.84);
+            transform: translateY(-1px);
+            outline: none;
+        }
+
+        .hero-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-top: 28px;
+            margin-left: clamp(18px, 3vw, 44px);
+        }
+
+        .button,
+        button,
+        select,
+        input,
+        textarea {
+            font: inherit;
+        }
+
+        .button,
+        .cancel-link,
+        button {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 46px;
+            border-radius: 16px;
+            transition: transform 180ms ease, box-shadow 180ms ease, background-color 180ms ease, color 180ms ease;
+        }
+
+        .button.primary,
+        button {
+            background: var(--accent);
+            color: #f8fffb;
+            border: none;
+            padding: 0 18px;
+            box-shadow: 0 12px 24px rgba(103, 128, 122, 0.2);
+            cursor: pointer;
+        }
+
+        .button.secondary {
+            padding: 0 18px;
+            border: 1px solid var(--line-strong);
+            color: black;
+            background: #d9dbd0;
+        }
+
+        .button:hover,
+        .cancel-link:hover,
+        button:hover,
+        .button:focus-visible,
+        .cancel-link:focus-visible,
+        button:focus-visible {
+            transform: translateY(-1px);
+            outline: none;
+        }
+
+        .button.primary:hover,
+        button:hover,
+        .button.primary:focus-visible,
+        button:focus-visible {
+            background: var(--accent-deep);
+        }
+
+        .main-grid {
+            display: grid;
+            gap: 24px;
+            align-items: stretch;
+        }
+
+        .upper-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 24px;
+            align-items:normal;
+        }
+            .upper-grid {
+    justify-content: center;
+}
+        
+
+        .lower-grid {
+            display: grid;
+            grid-template-columns: minmax(0, 1fr);
+            gap: 24px;
+            align-items: stretch;
+        }
+
+        .card,
+        .table-shell {
+            display: flex;
+            flex-direction: column;
+            border-radius: 30px;
+            padding: 24px;
+            min-width: 0;
+            height: 100%;
+        }
+
+        .upper-grid>.card,
+        .upper-grid>.table-shell {
+            min-height: 300px;
+        }
+
+        .lower-grid>.table-shell {
+            order: 1;
+            min-height: 460px;
+            max-height: 460px;
+        }
+
+        .lower-grid>.card {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .section-kicker {
+            color: var(--accent);
+            margin-bottom: 10px;
+        }
+
+        .section-title {
+            display: flex;
+            align-items: baseline;
+            justify-content: space-between;
+            gap: 16px;
+            margin-bottom: 18px;
+        }
+
+        .section-title h2 {
+            font-size: clamp(1.4rem, 3vw, 2rem);
+        }
+
+        .flash-list {
+            display: grid;
+            gap: 10px;
+            margin-bottom: 18px;
+        }
+
+        .flash {
+            padding: 14px 16px;
+            border-radius: 18px;
+            background: rgba(127, 146, 100, 0.14);
+            border: 1px solid rgba(127, 146, 100, 0.22);
+            color: #4f6245;
+        }
+
+        .note-form textarea,
+        .action-form select,
+        .action-form input {
+            width: 300px;
+            border: 1px solid var(--line);
+            border-radius: 18px;
+            background: rgba(252, 254, 252, 0.95);
+            color: var(--text);
+            padding: 14px 16px;
+        }
+
+        .action-form select {
+            padding-right: 40px;
+            /* 👈 يبعد السهم */
+
+            appearance: none;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+
+            background-image: url("data:image/svg+xml;utf8,<svg fill='%236e736a' height='20' viewBox='0 0 24 24' width='20' xmlns='http://www.w3.org/2000/svg'><path d='M7 10l5 5 5-5z'/></svg>");
+
+            background-repeat: no-repeat;
+            background-position: right 12px center;
+        }
+
+        .note-form textarea {
+            min-height: 148px;
+            resize: vertical;
+            margin-bottom: 14px;
+        }
+
+        .lower-grid>.card .note-form {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+
+            height: 100%;
+        }
+
+        .lower-grid>.card .note-form textarea {
+            flex: 1;
+            min-height: 80px;
+            max-height: 120px;
+            resize: none;
+            overflow-y: auto;
+            margin-bottom: 10px;
+        }
+
+        .lower-grid>.card .note-preview {
+            overflow-y: auto;
+        }
+
+        .note-preview {
+            margin-top: 18px;
+            padding-top: 16px;
+            border-top: 1px solid var(--line);
+        }
+
+        .note-preview p {
+            margin: 8px 0 0;
+            color: var(--muted);
+            line-height: 1.7;
+        }
+
+        .menu-list {
+            display: flex; /* يشد المحتوى داخل الكارد */
+    flex-direction: column;
+            flex: 1;
+            min-height: 0;
+            overflow-y: auto;
+            padding-right: 4px;
+            align-items: start;
+            align-content: start;
+            grid-auto-rows: max-content;
+        }
+
+.menu-item {
+    display: flex;              /* بدل grid */
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+}
+.menu-item strong {
+    font-size: 15px;   /* كان أكبر → صغرناه */
+    font-weight: 600;
+}
+
+
+        .menu-item p {
+    font-size: 13px;
+    color: var(--muted);
+}
+
+
+      /* الجهة اليمين */
+.menu-meta {
+    display: flex;
+    flex-direction: row;   /* بدل column */
+    align-items: center;
+    gap: 6px;
+    flex-wrap: wrap;
+}
+/* here */
+.menu-meta div {    
+    width: 100%;
+    display: flex;
+    gap: 8px;
+    margin-top: 6px;
+}
+
+.menu-list .menu-item > div:first-child {
+    flex: 1;
+}
+
+
+        .menu-meta button,
+.menu-meta .button {
+    font-size: 13px;
+    padding: 6px 12px;
+}
+        .pill {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 8px 12px;
+            border-radius: 999px;
+            font-weight: 700;
+            background: rgba(214, 232, 225, 0.74);
+            color: var(--accent-deep);
+        }
+
+        .pill {
+    font-size: 11px;
+    padding: 6px 10px;
+}
+
+
+        .pill.stock-low {
+            background: rgba(186, 95, 80, 0.12);
+            color: var(--danger);
+            font-size: 12px;
+        }
+
+        .pill.stock-ok {
+            background: rgba(127, 146, 100, 0.14);
+            color: #506244;
+            padding: 8px 11px 8px 16px;
+            font-size: 12px;
+        }
+
+        .empty-state {
+            padding: 22px;
+            border-radius: 24px;
+            border: 1px dashed var(--line-strong);
+            background: rgba(249, 253, 249, 0.62);
+            color: var(--muted);
+            line-height: 1.7;
+        }
+
+        .table-shell {
+            margin-top: 0;
+            overflow: hidden;
+        }
+
+        .table-scroll {
+            overflow-x: hidden;
+            overflow-y: auto;
+            flex: 1;
+            min-height: 0;
+            padding-right: 4px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 0;
+            table-layout: fixed;
+        }
+
+        th,
+        td {
+            text-align: left;
+            padding: 16px 10px;
+            border-bottom: 1px solid rgba(82, 108, 96, 0.12);
+            vertical-align: top;
+            word-break: break-word;
+        }
+
+        th {
+            color: var(--muted);
+            font-size: 0.76rem;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            font-weight: 800;
+            position: sticky;
+            top: 0;
+            background: var(--surface-strong);
+            z-index: 1;
+        }
+
+        tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        .order-item strong,
+        .order-amount {
+            display: block;
+            font-size: 1rem;
+        }
+
+        .order-item small,
+        .order-time,
+        .order-note {
+            color: var(--muted);
+            line-height: 1.55;
+        }
+
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 96px;
+            padding: 10px 16px;
+            border-radius: 999px;
+            font-weight: 700;
+        }
+
+        .status-pending {
+            background: rgba(212, 177, 105, 0.2);
+            color: #866531;
+        }
+
+        .status-confirmed {
+            background: rgba(47, 125, 107, 0.14);
+            color: var(--accent-deep);
+        }
+
+        .status-preparing {
+            background: rgba(121, 149, 145, 0.16);
+            color: #476a64;
+        }
+
+        .status-ready {
+            background: rgba(127, 146, 100, 0.16);
+            color: #506244;
+        }
+
+        .status-completed {
+            background: rgba(100, 119, 111, 0.14);
+            color: #52645e;
+        }
+
+        .action-form {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.action-form button {
+    align-self: flex-end;
+    min-width: 120px;
+}
+
+.action-form-row button {
+    margin-left: auto; /* 👈 هذا السحر */
+}
+        .cancel-link {
+    width: 100%;
+    text-align: center;
+}
+
+.incoming-order-main strong {
+    font-size: 16px;
+    font-weight: 600;
+}
+
+.incoming-order-main small,
+.order-note {
+    font-size: 13px;
+    color: var(--muted);
+}
+
+        .table-footer {
+            display: flex;
+            justify-content: space-between;
+            gap: 16px;
+            margin-top: 18px;
+            color: var(--muted);
+            font-size: 0.92rem;
+        }
+
+        .table-group+.table-group {
+            margin-top: 16px;
+        }
+
+        .table-group-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        .incoming-orders {
+            display: grid;
+            gap: 16px;
+            flex: 1;
+            min-height: 0;
+            overflow-y: auto;
+            padding-right: 4px;
+            align-items: start;
+            align-content: start;
+            grid-auto-rows: max-content;
+        }
+
+        .table-group {
+            display: grid;
+            gap: 14px;
+            padding: 18px;
+            border-radius: 24px;
+            background: rgba(249, 253, 249, 0.82);
+            border: 1px solid rgba(82, 108, 96, 0.14);
+            min-width: 0;
+        }
+
+        .upper-grid>.table-shell .table-scroll {
+            overflow-x: hidden;
+            overflow-y: auto;
+        }
+
+        .upper-grid>.table-shell .table-group .table-scroll {
+            padding-right: 0;
+        }
+
+        .upper-grid>.table-shell .table-group table,
+        .upper-grid>.table-shell .table-group thead,
+        .upper-grid>.table-shell .table-group tbody {
+            display: block;
+            width: 100%;
+        }
+
+        .upper-grid>.table-shell .table-group thead {
+            display: none;
+        }
+
+        .upper-grid>.table-shell .table-group tbody {
+            display: grid;
+            gap: 12px;
+            align-items: start;
+            align-content: start;
+            grid-auto-rows: max-content;
+        }
+
+        .upper-grid>.table-shell .table-group tbody tr {
+            display: grid;
+            grid-template-columns: minmax(0, 1.15fr) minmax(240px, 0.85fr);
+            gap: 14px;
+            align-items: start;
+            padding: 16px;
+            border-radius: 20px;
+            background: rgba(255, 255, 255, 0.58);
+            border: 1px solid rgba(82, 108, 96, 0.1);
+            height: auto;
+            min-height: unset;
+            align-self: start;
+        }
+
+        .upper-grid>.table-shell .table-group tbody td {
+            display: block;
+            padding: 0;
+            border-bottom: none;
+            min-width: 0;
+        }
+
+        .upper-grid>.table-shell .table-group tbody td:nth-child(2),
+        .upper-grid>.table-shell .table-group tbody td:nth-child(3),
+        .upper-grid>.table-shell .table-group tbody td:nth-child(4) {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 8px;
+        }
+
+        .upper-grid>.table-shell .table-group tbody td:nth-child(5) {
+            display: grid;
+            gap: 10px;
+        }
+
+        .upper-grid>.table-shell .table-group tbody td:nth-child(1) {
+            grid-row: 1 / span 3;
+        }
+
+        .upper-grid>.table-shell .table-group tbody td:nth-child(2)::before {
+            content: "Quantity";
+        }
+
+        .upper-grid>.table-shell .table-group tbody td:nth-child(3)::before {
+            content: "Status";
+        }
+
+        .upper-grid>.table-shell .table-group tbody td:nth-child(4)::before {
+            content: "Ready";
+        }
+
+        .upper-grid>.table-shell .table-group tbody td:nth-child(2)::before,
+        .upper-grid>.table-shell .table-group tbody td:nth-child(3)::before,
+        .upper-grid>.table-shell .table-group tbody td:nth-child(4)::before {
+            font-size: 0.72rem;
+            font-weight: 700;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: var(--muted);
+            min-width: 66px;
+        }
+
+        .upper-grid>.table-shell .table-group .action-form,
+        .upper-grid>.table-shell .table-group .cancel-link {
+            width: 100%;
+        }
+
+        .upper-grid>.table-shell .table-group tbody tr {
+            grid-template-columns: minmax(0, 1fr) minmax(250px, 0.9fr);
+            gap: 22px;
+            padding: 20px 22px;
+            border-radius: 22px;
+            background: rgba(255, 255, 255, 0.72);
+            border: 1px solid rgba(82, 108, 96, 0.12);
+            box-shadow: 0 12px 24px rgba(74, 75, 66, 0.08);
+        }
+
+        .upper-grid>.table-shell .table-group tbody td:nth-child(1) {
+            display: grid;
+            gap: 10px;
+            align-content: start;
+        }
+
+        .upper-grid>.table-shell .table-group tbody td:nth-child(2),
+        .upper-grid>.table-shell .table-group tbody td:nth-child(3),
+        .upper-grid>.table-shell .table-group tbody td:nth-child(4) {
+            justify-content: space-between;
+            gap: 14px;
+            margin-top: 0;
+            padding: 10px 12px;
+            border-radius: 14px;
+            background: rgba(244, 247, 243, 0.95);
+            border: 1px solid rgba(82, 108, 96, 0.08);
+        }
+
+        .upper-grid>.table-shell .table-group tbody td:nth-child(5) {
+            display: grid;
+            gap: 12px;
+            align-content: start;
+        }
+
+        .upper-grid>.table-shell .table-group .order-item strong {
+            font-size: 1.08rem;
+            font-weight: 700;
+            line-height: 1.25;
+        }
+
+        .upper-grid>.table-shell .table-group .order-item small,
+        .upper-grid>.table-shell .table-group .order-time {
+            font-size: 0.92rem;
+            color: var(--muted);
+        }
+
+        .upper-grid>.table-shell .table-group .status-badge {
+            min-width: 104px;
+            padding: 9px 14px;
+            font-size: 0.84rem;
+        }
+
+        .upper-grid>.table-shell .table-group .action-form {
+            display: grid;
+            gap: 12px;
+        }
+
+        .upper-grid>.table-shell .table-group .action-form select,
+        .upper-grid>.table-shell .table-group .action-form input {
+            width: 100%;
+            max-width: none;
+            min-height: 46px;
+        }
+
+        .upper-grid>.table-shell .table-group .action-form-row {
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) auto;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .upper-grid>.table-shell .table-group .action-form-row button {
+            justify-self: end;
+            min-width: 124px;
+        }
+
+        .upper-grid>.table-shell .table-group tbody td:nth-child(5) .cancel-link {
+            width: 100%;
+            justify-content: center;
+            background: rgba(176, 120, 111, 0.08);
+            border: 1px solid rgba(176, 120, 111, 0.16);
+            color: #9a6a62;
+            box-shadow: none;
+        }
+
+        .upper-grid>.table-shell .table-group tbody td:nth-child(5) .cancel-link:hover,
+        .upper-grid>.table-shell .table-group tbody td:nth-child(5) .cancel-link:focus-visible {
+            background: rgba(176, 120, 111, 0.12);
+            color: #875850;
+        }
+
+        .upper-grid>.table-shell .table-group tbody tr {
+            grid-template-columns: minmax(0, 1fr) auto auto minmax(228px, 246px);
+            gap: 8px 12px;
+            padding: 14px 16px;
+            border-radius: 18px;
+            background: rgba(255, 255, 255, 0.68);
+            box-shadow: 0 8px 18px rgba(74, 75, 66, 0.06);
+        }
+
+        .upper-grid>.table-shell .table-group tbody td:nth-child(1) {
+            grid-column: 1 / 4;
+            grid-row: 1;
+            display: grid;
+            gap: 4px;
+            align-content: start;
+        }
+
+        .upper-grid>.table-shell .table-group tbody td:nth-child(2) {
+            grid-column: 1;
+            grid-row: 2;
+        }
+
+        .upper-grid>.table-shell .table-group tbody td:nth-child(3) {
+            grid-column: 2;
+            grid-row: 2;
+        }
+
+        .upper-grid>.table-shell .table-group tbody td:nth-child(4) {
+            grid-column: 3;
+            grid-row: 2;
+        }
+
+        .upper-grid>.table-shell .table-group tbody td:nth-child(5) {
+            grid-column: 4;
+            grid-row: 1 / span 2;
+            display: grid;
+            gap: 10px;
+            align-content: start;
+        }
+
+        .upper-grid>.table-shell .table-group tbody td:nth-child(2),
+        .upper-grid>.table-shell .table-group tbody td:nth-child(3),
+        .upper-grid>.table-shell .table-group tbody td:nth-child(4) {
+            display: inline-flex;
+            align-items: baseline;
+            justify-content: flex-start;
+            gap: 6px;
+            margin-top: 0;
+            padding: 0;
+            border: none;
+            background: transparent;
+            white-space: nowrap;
+        }
+
+        .upper-grid>.table-shell .table-group tbody td:nth-child(2)::before,
+        .upper-grid>.table-shell .table-group tbody td:nth-child(3)::before,
+        .upper-grid>.table-shell .table-group tbody td:nth-child(4)::before {
+            min-width: auto;
+            font-size: 0.68rem;
+            letter-spacing: 0.08em;
+            color: var(--muted);
+        }
+
+        .upper-grid>.table-shell .table-group tbody td:nth-child(2)::after,
+        .upper-grid>.table-shell .table-group tbody td:nth-child(3)::after {
+            content: "\2022";
+            margin-left: 6px;
+            color: rgba(110, 115, 106, 0.72);
+        }
+
+        .upper-grid>.table-shell .table-group .order-item strong {
+            font-size: 1.02rem;
+            line-height: 1.25;
+        }
+
+        .upper-grid>.table-shell .table-group .order-item small {
+            font-size: 0.84rem;
+            line-height: 1.45;
+        }
+
+        .upper-grid>.table-shell .table-group .order-time {
+            font-size: 0.84rem;
+            line-height: 1.45;
+        }
+
+        .upper-grid>.table-shell .table-group .status-badge {
+            min-width: 0;
+            padding: 0;
+            border-radius: 0;
+            background: transparent;
+            color: var(--accent-deep);
+            font-size: 0.84rem;
+            font-weight: 700;
+        }
+
+        .upper-grid>.table-shell .table-group .action-form {
+            gap: 10px;
+        }
+
+        .upper-grid>.table-shell .table-group .action-form select,
+        .upper-grid>.table-shell .table-group .action-form input {
+            min-height: 42px;
+            padding: 10px 12px;
+            border-radius: 14px;
+            font-size: 0.92rem;
+        }
+
+        .upper-grid>.table-shell .table-group .action-form-row {
+            grid-template-columns: minmax(0, 1fr) auto;
+            gap: 8px;
+        }
+
+        .upper-grid>.table-shell .table-group .action-form-row button {
+            min-width: 108px;
+            min-height: 42px;
+            padding: 0 16px;
+        }
+
+        .upper-grid>.table-shell .table-group tbody td:nth-child(5) .cancel-link {
+            min-height: 42px;
+            border-radius: 14px;
+            background: rgba(176, 120, 111, 0.07);
+            border: 1px solid rgba(176, 120, 111, 0.14);
+            color: #9b6d65;
+        }
+
+        .upper-grid>.table-shell .table-group tbody tr {
+            grid-template-columns: minmax(0, 1fr) minmax(228px, 246px);
+            gap: 12px 16px;
+            align-items: start;
+        }
+
+        .upper-grid>.table-shell .table-group tbody td:nth-child(1) {
+            grid-column: 1;
+            grid-row: 1;
+            gap: 6px;
+        }
+
+        .upper-grid>.table-shell .table-group tbody td:nth-child(2),
+        .upper-grid>.table-shell .table-group tbody td:nth-child(3),
+        .upper-grid>.table-shell .table-group tbody td:nth-child(4) {
+            display: none;
+        }
+
+        .upper-grid>.table-shell .table-group tbody td:nth-child(5) {
+            grid-column: 2;
+            grid-row: 1;
+        }
+
+        .upper-grid>.table-shell .table-group .order-meta-line {
+            display: grid;
+            gap: 7px;
+            margin-top: 6px;
+            font-size: 0.84rem;
+            line-height: 1.4;
+            color: var(--muted);
+        }
+
+        .upper-grid>.table-shell .table-group .order-meta-chip {
+            display: inline-flex;
+            align-items: baseline;
+            gap: 6px;
+            min-width: 0;
+        }
+
+        .upper-grid>.table-shell .table-group .order-meta-label {
+            font-size: 0.68rem;
+            font-weight: 700;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: var(--muted);
+        }
+
+        .upper-grid>.table-shell .table-group .order-meta-value {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--text);
+        }
+
+        .upper-grid>.table-shell .table-group .order-meta-divider {
+            display: none;
+            color: rgba(110, 115, 106, 0.72);
+            font-size: 0.9rem;
+        }
+
+        .upper-grid>.table-shell>.section-title {
+            align-items: center;
+            gap: 14px;
+        }
+
+        .upper-grid>.table-shell>.section-title h2 {
+            white-space: nowrap;
+            flex: 0 0 auto;
+        }
+
+        .upper-grid>.table-shell>.section-title .table-meta {
+            margin-left: auto;
+            text-align: right;
+            max-width: 26ch;
+            line-height: 1.45;
+        }
+
+        .upper-grid>.table-shell .table-group tbody tr {
+            grid-template-columns: minmax(0, 1fr) minmax(236px, 248px);
+            gap: 14px 18px;
+            padding: 16px 18px;
+            align-items: start;
+        }
+
+        .upper-grid>.table-shell .table-group tbody td:nth-child(1) {
+            gap: 8px;
+        }
+
+        .upper-grid>.table-shell .table-group .order-item {
+            display: grid;
+            gap: 8px;
+        }
+
+        .upper-grid>.table-shell .table-group .order-item strong {
+            font-size: 1.06rem;
+            line-height: 1.28;
+        }
+
+        .upper-grid>.table-shell .table-group .order-item small {
+            font-size: 0.86rem;
+            line-height: 1.5;
+        }
+
+        .upper-grid>.table-shell .table-group .order-meta-line {
+            gap: 9px;
+            margin-top: 4px;
+        }
+
+        .upper-grid>.table-shell .table-group tbody td:nth-child(5) {
+            gap: 10px;
+            align-content: start;
+        }
+
+        .upper-grid>.table-shell .table-group .action-form {
+            gap: 10px;
+            align-content: start;
+        }
+
+        .upper-grid>.table-shell .table-group .action-form-row {
+            grid-template-columns: minmax(0, 1fr) auto;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .lower-grid>.table-shell .table-scroll {
+            overflow-y: auto;
+            overflow-x: hidden;
+        }
+
+        .session-group+.session-group {
+            margin-top: 14px;
+            padding-top: 14px;
+            border-top: 1px dashed rgba(82, 108, 96, 0.16);
+        }
+
+        .session-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            margin-bottom: 10px;
+        }
+
+        .session-chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 12px;
+            border-radius: 999px;
+            background: rgba(214, 232, 225, 0.52);
+            color: var(--accent-deep);
+            font-size: 0.76rem;
+            font-weight: 700;
+            letter-spacing: 0.05em;
+        }
+
+        .session-value {
+            font-family: "Manrope", sans-serif;
+            text-transform: none;
+            letter-spacing: 0;
+            color: var(--text);
+            font-weight: 600;
+        }
+
+        .table-order-list {
+            display: grid;
+            gap: 12px;
+        }
+
+       .incoming-order-row {
+    display: grid;
+    grid-template-columns: 1fr 260px;
+    gap: 18px;
+    align-items: start;
+    padding: 20px;
+    border-radius: 20px;
+    background: rgba(255, 255, 255, 0.55);
+    border: 1px solid rgba(82, 108, 96, 0.1);
+}
+        .incoming-order-main {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+        .incoming-order-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .incoming-order-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+        .incoming-order-actions .cancel-link,
+        .incoming-order-actions button,
+        .incoming-order-actions .action-form {
+            width: 100%;
+        }
+
+        .section-kicker {
+            font-size: 0.8rem;
+            margin-bottom: 8px;
+        }
+
+        .upper-grid>.table-shell>.section-title {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        .upper-grid>.table-shell>.section-title h2 {
+            white-space: nowrap;
+            flex: 0 0 auto;
+        }
+
+        .upper-grid>.table-shell>.section-title .table-meta {
+            margin-left: auto;
+            max-width: 28ch;
+            font-size: 0.8rem;
+            line-height: 1.45;
+            text-align: right;
+        }
+
+        .upper-grid>.card .menu-item {
+            grid-template-columns: minmax(0, 1fr) auto;
+            gap: 14px;
+            padding: 8px 9px;
+            align-items: start;
+        }
+
+        .upper-grid>.card .menu-item strong {
+            font-size: 1.04rem;
+            font-weight: 700;
+            line-height: 1.3;
+            margin-bottom: 4px;
+        }
+
+        .upper-grid>.card .menu-item p {
+            font-size: 1.3rem;
+            line-height: 1.5;
+        }
+
+        .upper-grid>.card .menu-meta {
+            gap: 10px;
+            align-items: flex-end;
+        }
+
+        .upper-grid>.table-shell .table-group tbody tr {
+            grid-template-columns: minmax(0, 1fr) minmax(232px, 248px);
+            gap: 14px 18px;
+            padding: 16px 18px;
+        }
+
+        .upper-grid>.table-shell .table-group tbody td:nth-child(1) {
+            gap: 10px;
+        }
+
+        .upper-grid>.table-shell .table-group .order-item {
+            display: grid;
+            gap: 10px;
+        }
+
+        .upper-grid>.table-shell .table-group .order-item strong {
+            font-size: 1.04rem;
+            line-height: 1.28;
+        }
+
+        .upper-grid>.table-shell .table-group .order-item small {
+            font-size: 0.86rem;
+            line-height: 1.5;
+        }
+
+        .upper-grid>.table-shell .table-group .order-meta-line {
+            gap: 8px;
+            margin-top: 6px;
+        }
+
+        .lower-grid>.card .section-title {
+            display: grid;
+            gap: 8px;
+            margin-bottom: 16px;
+            justify-content: start;
+        }
+
+        .lower-grid>.card .section-title h2 {
+            font-size: 1.6rem;
+        }
+
+        .lower-grid>.card .note-form {
+            width: 100%;
+            gap: 12px;
+            align-content: start;
+        }
+
+        .lower-grid>.card .note-form textarea {
+            width: 100%;
+            max-width: none;
+            min-height: 90px;
+            margin: 0;
+        }
+
+        .lower-grid>.card .note-form button {
+            width: 100%;
+        }
+
+        .lower-grid>.card .note-preview {
+            margin-top: 14px;
+            padding-top: 14px;
+        }
+
+        .lower-grid>.card .note-preview .hint {
+            display: block;
+            margin-bottom: 6px;
+            font-size: 0.78rem;
+        }
+
+        .menu-list .menu-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 14px;
+            padding: 16px 0;
+            border-radius: 0;
+            background: transparent;
+            border: none;
+            border-bottom: 1px solid rgba(46, 49, 44, 0.08);
+        }
+
+        .menu-list .menu-item:last-child {
+            border-bottom: none;
+            padding-bottom: 0;
+        }
+
+        .menu-list .menu-item:first-child {
+            padding-top: 0;
+        }
+
+        .menu-list .menu-item>div:first-child {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .menu-list .menu-item strong {
+            display: block;
+            margin-bottom: 4px;
+            font-size: 1.08rem;
+            font-weight: 700;
+            line-height: 1.28;
+        }
+
+        .menu-list .menu-item p {
+            margin: 0;
+            font-size: 0.94rem;
+            line-height: 1.45;
+            color: var(--muted);
+        }
+
+        .menu-list .menu-meta {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            gap: 10px;
+            flex: 0 0 auto;
+        }
+
+        .menu-list .menu-meta>span,
+        .menu-list .menu-meta .pill {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            white-space: nowrap;
+        }
+
+        .menu-list .menu-meta>div {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            gap: 8px;
+        }
+
+        .menu-list .menu-meta>div .button,
+        .menu-list .menu-meta>div .cancel-link {
+            min-height: 38px;
+            padding: 0 14px;
+        }
+
+        @media (max-width: 980px) {
+
+            .upper-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .upper-grid>.card,
+            .upper-grid>.table-shell,
+            .lower-grid>.table-shell,
+            .lower-grid>.card {
+                min-height: auto;
+                max-height: none;
+            }
+
+            .upper-grid>.table-shell .table-group tbody tr {
+                grid-template-columns: 1fr;
+            }
+
+            .upper-grid>.table-shell .table-group tbody td:nth-child(1) {
+                grid-row: auto;
+            }
+        }
+
+        @media (max-width: 720px) {
+            .page-shell {
+                width: min(100% - 20px, 1180px);
+                padding-top: 18px;
+            }
+
+            .topbar,
+            .card,
+            .table-shell,
+            .hero {
+                border-radius: 24px;
+            }
+
+            .hero {
+                padding-right: clamp(28px, 5vw, 44px);
+            }
+
+            .hero::before {
+                display: none;
+            }
+
+            .topbar,
+            .section-title,
+            .table-footer,
+            .table-group-header,
+            .session-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .upper-grid>.table-shell>.section-title h2 {
+                white-space: normal;
+            }
+
+            .upper-grid>.table-shell>.section-title .table-meta {
+                margin-left: 0;
+                text-align: left;
+                max-width: none;
+            }
+
+            .hero-actions,
+            .nav-links {
+                width: 100%;
+            }
+
+            .nav-links a,
+            .button {
+                flex: 1 1 auto;
+                text-align: center;
+            }
+
+            .action-form-row {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+            th,
+            td {
+                padding-inline: 8px;
+            }
+        }
+
+        @media (prefers-reduced-motion: no-preference) {
+
+            .topbar,
+            .hero,
+            .card,
+            .table-shell {
+                animation: rise 600ms cubic-bezier(0.22, 1, 0.36, 1) both;
+            }
+
+            .hero {
+                animation-delay: 90ms;
+            }
+
+            .stack>*:nth-child(1) {
+                animation-delay: 150ms;
+            }
+
+            .stack>*:nth-child(2) {
+                animation-delay: 210ms;
+            }
+
+            .table-shell {
+                animation-delay: 260ms;
+            }
+
+            /* ===== INVENTORY FIX (SAFE) ===== */
+
+/* ===== INVENTORY FIX (STRONG SAFE FIX) ===== */
+/* ===== FIX INVENTORY STRETCH (SAFE) ===== */
+
+.upper-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 20px;
+    align-items: start;
+}
+
+.upper-grid > .card,
+.upper-grid > .table-shell {
+    width: 100%;
+    min-height: auto;
+}
+
+.menu-list,
+.incoming-orders {
+    flex: 0 0 auto;
+    min-height: auto;
+}
+
+.table-footer {
+    margin-top: 8px;
+    padding-top: 0;
+}
+
+        .menu-list .menu-item {
+            display: flex;
+            justify-content: flex-start;
+            align-items: flex-start;
+            gap: 10px;
+            padding: 20px 0;
+            background: transparent;
+            border: none;
+            border-bottom: 1px solid rgba(46, 49, 44, 0.16);
+            border-radius: 0;
+        }
+
+        .menu-list .menu-item:first-child {
+            padding-top: 0;
+        }
+
+        .menu-list .menu-item:last-child {
+            padding-bottom: 0;
+            border-bottom: none;
+        }
+
+        .menu-list .menu-item>div:first-child {
+            flex: 1;
+            min-width: 0;
+            padding-right: 8px;
+        }
+
+        .menu-list .menu-item strong {
+            display: block;
+            margin-bottom: 4px;
+            font-size: 1.08rem;
+            font-weight: 700;
+            line-height: 1.28;
+        }
+
+        .menu-list .menu-item p {
+            margin: 0;
+            font-size: 0.94rem;
+            line-height: 1.45;
+            color: var(--muted);
+        }
+
+        .menu-list .menu-meta {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            gap: 10px;
+            flex: 0 0 auto;
+            width: fit-content;
+            margin-left: auto;
+        }
+
+        .menu-list .menu-badge-row {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            flex-wrap: wrap;
+            gap: 8px;
+            width: fit-content;
+        }
+
+        .menu-list .menu-badge-row .pill {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            white-space: nowrap;
+            font-size: 0.76rem;
+            padding: 8px 12px;
+        }
+
+        .menu-list .menu-actions-row {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            gap: 8px;
+            width: fit-content;
+        }
+
+        .menu-list .menu-item+.menu-item {
+            margin-top: 6px;
+        }
+
+        .menu-list .menu-actions-row .button,
+        .menu-list .menu-actions-row .cancel-link {
+            min-height: 38px;
+            padding: 0 14px;
+        }
+            @keyframes rise {
+                from {
+                    opacity: 0;
+                    transform: translateY(18px);
+                }
+
+                to {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
+            }
+        }
+     /* ===== FINAL FIX (DO NOT TOUCH ANYTHING ELSE) ===== */
+
+.upper-grid > .card .menu-list .menu-item {
+    display: flex;
+    justify-content: flex-start;
+    align-items: flex-start;
+    gap: 90px;
+    margin-left:30px;
+
+    /* يلغي تأثير grid القديم */
+    grid-template-columns: none;
+}
+
+/* يخلي اليسار يتمدد */
+.upper-grid > .card .menu-list .menu-item > div:first-child {
+    flex: 1;
+    min-width: 0;
+}
+
+/* يمنع اليمين يتمدد */
+.upper-grid > .card .menu-list .menu-meta {
+    flex: 0 0 auto;
+    width: fit-content;
+    margin-left: 0;
+
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+}
+
+/* البادجات جنب بعض */
+.upper-grid > .card .menu-badge-row {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+}
+
+/* الأزرار */
+.upper-grid > .card .menu-actions-row {
+    display: flex;
+    gap: 8px;
+    justify-content: flex-start;
+}
+
+/* spacing بين العناصر */
+.upper-grid > .card .menu-list .menu-item {
+    margin-bottom: 14px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid rgba(0,0,0,0.14);
+}
+
+.upper-grid > .card .menu-list .menu-item:last-child {
+    margin-bottom: 0;
+    border-bottom: none;
+}
+
+    </style>
 </head>
 
 <body>
+    <div class="page-shell">
+        <header class="topbar">
+            <div class="brand">
+                <div class="brand-mark">BM</div>
+                <div class="brand-copy">
+                    <span>Owner space</span>
+                    <strong>{% if restaurant %}{{ restaurant.name }}{% else %}BiteMenu{% endif %}</strong>
+                </div>
+            </div>
+            <nav class="nav-links" aria-label="Primary navigation">
+                {% if request.session.role == 'owner' %}
+                <a href="{% url 'owner_menu_redirect' %}">Menu</a>
+                {% else %}
+                <a href="/restaurants">Menu</a>
+                {% endif %}
+                <a href="/my_orders">My Orders</a>
+                <a href="/logout">Logout</a>
+                <!-- <a href="/open_customer_mode">Open as Customer</a> -->
+                {% if request.session.admin_id %}
+                {% if request.session.role == 'owner' %}
+                <a href="/back_to_admin">Back to Admin</a>
+                {% endif %}
+                {% endif %}
+            </nav>
+        </header>
 
-    <!-- NavBar -->
-    <div>
-        <a href="/restaurants">Menu</a> |
-        <a href="/my_orders">My Orders</a> |
-        <a href="/logout">Logout</a>
+        <section class="hero">
+            <div>
+                <div class="eyebrow">Owner Dashboard</div>
+                <h1>{% if restaurant %}{{ restaurant.name }}{% else %}Your restaurant workspace{% endif %}</h1>
+                <p class="owner">
+                    Keep service steady, update customer timelines, and manage the operational pulse of your menu from
+                    one calm control center.
+                </p>
+                <h3 class="qr-links-title">Table QR Links:</h3>
+                <div class="qr-links">
+                    <a href="/menu/{{ restaurant.public_token }}/?table=1&new=1" target="_blank">Table 1</a>
+                    <a href="/menu/{{ restaurant.public_token }}/?table=2&new=1" target="_blank">Table 2</a>
+                    <a href="/menu/{{ restaurant.public_token }}/?table=3&new=1" target="_blank">Table 3</a>
+                </div>
+
+                <div class="hero-actions">
+                    {% if restaurant %}
+                    <a class="button primary" href="/add_item/{{ restaurant.id }}">Add New Item</a>
+                    {% endif %}
+                    <a class="button secondary" href="/my_orders">View Active Orders</a>
+                </div>
+            </div>
+
+        </section>
+
+        {% if messages %}
+        <div class="flash-list">
+            {% for message in messages %}
+            <div class="flash">{{ message }}</div>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        <section class="main-grid">
+            <section class="upper-grid">
+                <article class="card">
+                    <div class="section-kicker">Menu Health</div>
+                    <div class="section-title">
+                        <h2>Inventory glance</h2>
+                        <span class="hint">{{ menu_items|length }} items tracked</span>
+                    </div>
+
+                    {% if menu_items %}
+                    <div class="menu-list">
+                        {% for item in menu_items %}
+                        <div class="menu-item">
+
+                            <!-- LEFT SIDE -->
+                            <div>
+                                <strong>{{ item.name }}</strong>
+                                <p>${{ item.price }} | {{ item.get_status_display }}</p>
+                                {% if item.option_groups.all %}
+                                <div class="selected-options">
+                                    {% for group in item.option_groups.all %}
+                                    <span>{{ group.name }}: {{ group.options.all|length }} choice{{ group.options.all|length|pluralize }}</span>
+                                    {% endfor %}
+                                </div>
+                                {% endif %}
+                            </div>
+
+                            <!-- RIGHT SIDE -->
+                            <div class="menu-meta">
+                                <div class="menu-badge-row">
+                                    <span
+                                        class="pill {% if item.quantity <= item.low_stock_threshold %}stock-low{% else %}stock-ok{% endif %}">
+                                        Stock {{ item.quantity }}
+                                    </span>
+
+                                    {% if item.quantity <= 2 %} <span class="pill stock-low">Recharge</span>
+                                        {% elif item.quantity <= item.low_stock_threshold %} <span class="pill stock-low">
+                                            Low stock</span>
+                                            {% else %}
+                                            <span class="pill stock-ok">Sufficient</span>
+                                            {% endif %}
+                                </div>
+                                <div class="menu-actions-row">
+                                    <a href="/edit_item/{{ item.id }}" class="button secondary">Edit</a>
+                                    <a href="/delete_item/{{ item.id }}" class="cancel-link">Delete</a>
+                                </div>
+
+                            </div>
+
+                        </div>
+                        {% endfor %}
+                    </div>
+                    {% else %}
+                    <div class="empty-state">
+                        Your menu is still empty. Add your first item to start receiving orders from customers.
+                    </div>
+                    {% endif %}
+                </article>
+
+                <article class="table-shell">
+                    <div class="section-kicker">Order Flow</div>
+                    <div class="section-title">
+                        <h2>Incoming orders</h2>
+                        <span class="table-meta">Update status and expected time from the same row.</span>
+                    </div>
+
+                    {% if orders_by_table %}
+                    <div class="incoming-orders">
+                        {% for table_group in orders_by_table %}
+                        <div class="table-group">
+
+                            {% for session_group in table_group.sessions %}
+                            <div class="session-group">
+
+                                <!--  Table + Customer -->
+                                <div class="table-group-header">
+                                    <span class="pill">
+                                        Table {{ table_group.table_number }} —
+                                        Customer {{ session_group.orders.0.customer_label }}
+                                    </span>
+                                </div>
+                                <div class="table-scroll">
+                                    <table>
+                                        <thead>
+                                            <tr>
+                                                <th>Item</th>
+                                                <th>Quantity</th>
+                                                <th>Status</th>
+                                                <th>Expected Time</th>
+                                                <th>Actions</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for order in session_group.orders %}
+                                            <tr>
+                                                <td>
+                                                    <div class="order-item">
+                                                        <strong>{{ order.menu_item.name }}</strong>
+                                                        <small>
+                                                            {% if order.note %}
+                                                            Customer note: {{ order.note }}
+                                                            {% else %}
+                                                            No special instructions.
+                                                            {% endif %}
+                                                        </small>
+                                                        {% if order.selected_options.all %}
+                                                        <div class="selected-options">
+                                                            {% for option in order.selected_options.all %}
+                                                            <span>{{ option.option_group_name }}: {{ option.option_name }} (+${{ option.option_price }})</span>
+                                                            {% endfor %}
+                                                        </div>
+                                                        {% endif %}
+                                                        <div class="order-meta-line">
+                                                            <span class="order-meta-chip">
+                                                                <span class="order-meta-label">Quantity</span>
+                                                                <span class="order-meta-value">{{ order.quantity }}</span>
+                                                            </span>
+                                                            <span class="order-meta-divider">&bull;</span>
+                                                            <span class="order-meta-chip">
+                                                                <span class="order-meta-label">Status</span>
+                                                                <span class="order-meta-value">{{ order.status }}</span>
+                                                            </span>
+                                                            <span class="order-meta-divider">&bull;</span>
+                                                            <span class="order-meta-chip">
+                                                                <span class="order-meta-label">Ready</span>
+                                                                <span class="order-meta-value">
+                                                                    {% if order.expected_time %}
+                                                                    {{ order.expected_time|date:"M d, Y | H:i" }}
+                                                                    {% else %}
+                                                                    Not set yet
+                                                                    {% endif %}
+                                                                </span>
+                                                            </span>
+                                                        </div>
+                                                    </div>
+                                                </td>
+
+                                                <td>
+                                                    <span class="order-amount">{{ order.quantity }}</span>
+                                                </td>
+
+                                                <!--  STATUS DISPLAY -->
+                                                <td>
+                                                    <span class="status-badge status-{{ order.status }}">
+                                                        {{ order.status }}
+                                                    </span>
+                                                </td>
+
+                                                <!--  EXPECTED TIME -->
+                                                <td>
+                                                    <div class="order-time">
+                                                        {% if order.expected_time %}
+                                                        {{ order.expected_time|date:"M d, Y | H:i" }}
+                                                        {% else %}
+                                                        Not set yet
+                                                        {% endif %}
+                                                    </div>
+                                                </td>
+
+                                                <!-- ✅ ACTIONS -->
+                                                <td>
+                                                    <form class="action-form" action="/update_order/{{ order.id }}"
+                                                        method="POST">
+                                                        {% csrf_token %}
+
+                                                        <select name="status">
+
+                                                            {% if order.status == "pending" %}
+                                                            <option value="pending" selected>Pending</option>
+                                                            {% else %}
+                                                            <option value="pending">Pending</option>
+                                                            {% endif %}
+
+                                                            {% if order.status == "confirmed" %}
+                                                            <option value="confirmed" selected>Confirmed</option>
+                                                            {% else %}
+                                                            <option value="confirmed">Confirmed</option>
+                                                            {% endif %}
+
+                                                            {% if order.status == "preparing" %}
+                                                            <option value="preparing" selected>Preparing</option>
+                                                            {% else %}
+                                                            <option value="preparing">Preparing</option>
+                                                            {% endif %}
+
+                                                            {% if order.status == "ready" %}
+                                                            <option value="ready" selected>Ready</option>
+                                                            {% else %}
+                                                            <option value="ready">Ready</option>
+                                                            {% endif %}
+
+                                                            {% if order.status == "completed" %}
+                                                            <option value="completed" selected>Completed</option>
+                                                            {% else %}
+                                                            <option value="completed">Completed</option>
+                                                            {% endif %}
+
+                                                        </select>
+
+                                                        <div class="action-form-row">
+                                                            <input type="datetime-local" name="expected_time">
+                                                            <button type="submit">Update</button>
+                                                        </div>
+                                                    </form>
+
+                                                    <a class="cancel-link"
+                                                        href="/owner_cancel/{{ order.id }}">Cancel</a>
+                                                </td>
+                                            </tr>
+                                            {% endfor %}
+
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                        {% endfor %}
+                    </div>
+                    <div class="table-footer">
+                        <span>Keep expected times current to reduce uncertainty for customers.</span>
+                        <span>{{ orders|length }} active order{{ orders|length|pluralize }}</span>
+                    </div>
+                    {% else %}
+                    <div class="empty-state">
+                        No active orders right now. When new orders arrive, this board will turn into your live service
+                        queue.
+                    </div>
+                    {% endif %}
+                </article>
+            </section>
+
+            <section class="lower-grid">
+                <article class="card">
+                    <div class="section-kicker">Admin Communication</div>
+                    <div class="section-title">
+                        <h2>Send a note</h2>
+                        <span class="hint">Keep requests and updates in one place.</span>
+                    </div>
+                    <form class="note-form" action="/update_restaurant_note" method="POST">
+                        {% csrf_token %}
+                        <textarea name="note"
+                            placeholder="Share operational updates, subscription questions, or anything the admin team should know.">{% if restaurant and restaurant.note %}{{ restaurant.note }}{% endif %}</textarea>
+                        <button type="submit">Save Note</button>
+                    </form>
+
+                    {% if restaurant and restaurant.note %}
+                    <div class="note-preview">
+                        <div class="hint">Current note</div>
+                        <p>{{ restaurant.note }}</p>
+                    </div>
+                    {% endif %}
+                </article>
+
+                <article class="table-shell">
+                    <div class="section-kicker">History</div>
+                    <div class="section-title">
+                        <h2>Order History</h2>
+                        <span class="table-meta">Completed and cancelled orders.</span>
+                    </div>
+
+                    {% if history %}
+                    <div class="table-scroll">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Item</th>
+                                    <th>Quantity</th>
+                                    <th>Status</th>
+                                    <th>Table</th>
+                                    <th>Total Price</th>
+                                    <th>Date</th>
+                                    <th>Note</th>
+                                    <th>Delete</th>
+                                </tr>
+                            </thead>
+
+                            <tbody>
+                                {% for order in history %}
+                                <tr>
+                                    <td>
+                                        <div class="order-item">
+                                            <strong>{{ order.menu_item.name }}</strong>
+                                            {% if order.selected_options.all %}
+                                            <div class="selected-options">
+                                                {% for option in order.selected_options.all %}
+                                                <span>{{ option.option_group_name }}: {{ option.option_name }} (+${{ option.option_price }})</span>
+                                                {% endfor %}
+                                            </div>
+                                            {% endif %}
+                                        </div>
+                                    </td>
+
+                                    <td>
+                                        <span class="order-amount">{{ order.quantity }}</span>
+                                    </td>
+
+                                    <td>
+                                        <span class="status-badge status-{{ order.status }}">
+                                            {{ order.status }}
+                                        </span>
+                                    </td>
+
+                                    <td>
+                                        <div class="order-time">
+                                            {% if order.table_number %}
+                                            Table {{ order.table_number }}
+                                            {% else %}
+                                            No table
+                                            {% endif %}
+                                        </div>
+                                    </td>
+
+                                    <td>
+                                        <div class="order-time">
+                                            ${{ order.total_price|floatformat:2 }}
+                                        </div>
+                                    </td>
+
+                                    <td>
+                                        <div class="order-time">
+                                            {{ order.created_at|date:"M d, Y | H:i" }}
+                                        </div>
+                                    </td>
+
+                                    <td>
+                                        <div class="order-note">
+                                            {{ order.note|default:"-" }}
+                                        </div>
+                                    </td>
+                                    
+                                    <td>
+                                        <button class="cancel-link" onclick="deleteOrder({{order.id}}, this)">
+                                            Delete
+                                        </button>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="table-footer">
+                        <span>{{ history|length }} past order{{ history|length|pluralize }}</span>
+                    </div>
+
+                    {% else %}
+                    <div class="empty-state">
+                        No history yet.
+                    </div>
+                    {% endif %}
+                </article>
+            </section>
+        </section>
     </div>
 
+    <script>
+        function deleteOrder(orderId, btn) {
 
-    <h1>Owner Dashboard</h1>
+            fetch(`/delete_order/${orderId}`, {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': getCookie('csrftoken')
+                }
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
 
-    {% for message in messages %}
-    <p style="color:green">{{ message }}</p>
-    {% endfor %}
+                        let row = btn.closest("tr");
+                        row.remove();
+                    }
+                });
+        }
 
-    <a href="/add_item/{{ restaurant.id }}">Add New Item</a>
-    <a href="/owner_cancel/{{ order.id }}">Cancel</a>
-
-
-    <h2>Send Note to Admin</h2>
-
-    <form action="/update_restaurant_note" method="POST">
-        {% csrf_token %}
-
-        <textarea name="note"></textarea>
-
-        <button type="submit">Send</button>
-    </form>
-
-
-    <h2>Orders</h2>
-
-    <table border="1">
-        <tr>
-            <th>Item</th>
-            <th>Quantity</th>
-            <th>Status</th>
-            <th>Expected Time</th>
-            <th>Action</th>
-        </tr>
-
-        {% for order in orders %}
-        <tr>
-            <td>{{ order.menu_item.name }}</td>
-            <td>{{ order.quantity }}</td>
-            <td>
-                {% if order.status == 'pending' %}
-                <span style="color:orange">Pending</span>
-                {% elif order.status == 'preparing' %}
-                <span style="color:blue">Preparing</span>
-                {% elif order.status == 'ready' %}
-                <span style="color:green">Ready</span>
-                {% else %}
-                {{ order.status }}
-                {% endif %}
-            </td>
-            
-            <td><a href="/owner_cancel/{{ order.id }}">Cancel</a></td>
-
-            <td>
-                {% if order.expected_time %}
-                {{ order.expected_time }}
-                {% else %}
-                Not set
-                {% endif %}
-            </td>
-
-            <td>
-                <form action="/update_order/{{ order.id }}" method="POST">
-                    {% csrf_token %}
-
-                    <!-- STATUS -->
-                    <select name="status">
-                        <option value="pending">Pending</option>
-                        <option value="confirmed">Confirmed</option>
-                        <option value="preparing">Preparing</option>
-                        <option value="ready">Ready</option>
-                        <option value="completed">Completed</option>
-                    </select>
-
-                    <!--  OWNER TIME (OPTIONAL) -->
-                    <input type="datetime-local" name="expected_time">
-
-                    <button type="submit">Update</button>
-                </form>
-            </td>
-        </tr>
-        {% endfor %}
-
-    </table>
-
+        // CSRF
+        function getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                let cookies = document.cookie.split(';');
+                for (let i = 0; i < cookies.length; i++) {
+                    let cookie = cookies[i].trim();
+                    if (cookie.startsWith(name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+    </script>
 </body>
 
 </html>

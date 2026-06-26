@@ -1,74 +1,163 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Dashboard</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Cormorant+Garamond:wght@600;700&display=swap"
+        rel="stylesheet">
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
+
 </head>
 
 <body>
-    <!-- NavBar -->
-    <div>
-        <a href="/restaurants">Menu</a> |
-        <a href="/my_orders">My Orders</a> |
-        <a href="/logout">Logout</a>
+    <div class="page-shell">
+        <header class="topbar">
+            <div class="brand">
+                <div class="brand-mark">BM</div>
+                <div class="brand-copy">
+                    <span>Admin space</span>
+                    <strong>BiteMenu control room</strong>
+                </div>
+            </div>
+            <nav class="nav-links" aria-label="Primary navigation">
+                <a href="/restaurants">Menu</a>
+                <a href="/my_orders">My Orders</a>
+                <a href="/logout">Logout</a>
+            </nav>
+        </header>
+
+        <section class="hero">
+            <div class="hero-layout">
+                <div class="hero-content">
+                    <div class="eyebrow">Admin Dashboard</div>
+                    <h1>Manage every restaurant from one clear view.</h1>
+                    <p class="hero-copy">
+                        Review restaurant activity, step into owner mode when support is needed, and keep account
+                        notes and cleanup actions close to the records they affect.
+                    </p>
+                    <div class="hero-actions">
+                        <a class="button primary" href="/create_restaurant">Add Restaurant</a>
+                        <a class="button secondary" href="/restaurants">Restaurants Menus</a>
+                    </div>
+                </div>
+
+                <div class="hero-media">
+                    <img class="hero-image" src="{% static 'images/restaurnat.jpg' %}"
+                        alt="Restaurant workspace overview">
+                </div>
+            </div>
+        </section>
+
+        <section class="stats-grid" aria-label="Dashboard summary">
+
+            <article class="stat-card">
+                <span class="stat-label">Restaurants</span>
+
+                <span class="count-pill">
+                    {{ restaurant.orders.count }} order{{ restaurant.orders.count|pluralize }}
+                </span>
+
+                <p>Total restaurant workspaces currently managed from this dashboard.</p>
+            </article>
+
+            <article class="stat-card">
+                <span class="stat-label">Owner Access</span>
+                <div class="stat-value">Direct</div>
+                <p>Jump into any restaurant as the owner without leaving the admin workflow.</p>
+            </article>
+
+            <article class="stat-card">
+                <span class="stat-label">Admin Focus</span>
+                <div class="stat-value">Notes</div>
+                <p>Use stored notes and order counts to quickly spot restaurants that need support.</p>
+            </article>
+
+        </section>
+
+        <section class="table-shell">
+            <div class="section-kicker">Restaurant Directory</div>
+            <div class="section-title">
+                <h2>All restaurants</h2>
+                <span class="table-meta">Responsive layout for desktop review and mobile triage.</span>
+            </div>
+
+            {% if restaurants %}
+            <div class="table-scroll">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Restaurant</th>
+                            <th>Owner</th>
+                            <th>Orders</th>
+                            <th>Admin Note</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for restaurant in restaurants %}
+                        <tr>
+                            <td>
+                                <div class="mobile-label">Restaurant</div>
+                                <div class="restaurant-name">{{ restaurant.name }}</div>
+                                <p class="restaurant-description">
+                                    {% if restaurant.description %}
+                                    {{ restaurant.description }}
+                                    {% else %}
+                                    No description added yet.
+                                    {% endif %}
+                                </p>
+                            </td>
+                            <td>
+                                <div class="mobile-label">Owner</div>
+                                <span class="restaurant-meta">
+                                    {{ restaurant.owner.first_name }}
+                                </span>
+                            </td>
+                            <td>
+                                <div class="mobile-label">Orders</div>
+                                <span class="count-pill">
+                                    {{ restaurant.orders.count }} order{{ restaurant.orders.count|pluralize }}
+                                </span>
+                            </td>
+                            <td>
+                                <div class="mobile-label">Admin Note</div>
+                                <div class="notes-cell">
+                                    {% if restaurant.note %}
+                                    {{ restaurant.note }}
+                                    {% else %}
+                                    <span class="notes-empty">No notes saved.</span>
+                                    {% endif %}
+                                </div>
+                            </td>
+                            <td>
+                                <div class="mobile-label">Actions</div>
+                                <div class="action-stack">
+                                    <!-- <a class="button secondary" href="/login_as_owner/{{ restaurant.id }}">Login as
+                                        Owner</a> -->
+                                    <a class="button secondary" href="/menu/{{ restaurant.id }}?mode=customer">Check it as
+                                        Customer</a>
+                                    <a class="danger-link" href="/delete_restaurant/{{ restaurant.id }}">Delete</a>
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <div class="empty-state">
+                No restaurants have been added yet. Create the first restaurant to start onboarding owners and taking
+                orders.
+            </div>
+            {% endif %}
+        </section>
     </div>
-
-    <h1>Admin Dashboard</h1>
-
-    <h2>All Restaurants</h2>
-    <p>Total Restaurants: {{ restaurants|length }}</p>
-    <table border="1">
-        <tr>
-            <th>Name</th>
-            <th>Description</th>
-            <th>Owner</th>
-            <th>Orders Count</th>
-            <th>Actions</th>
-
-        </tr>
-
-        {% for restaurant in restaurants %}
-        <tr>
-            <td>{{ restaurant.name }}</td>
-            <td>{{ restaurant.description }}</td>
-            <td>{{ restaurant.owner.first_name }}</td>
-            <td>{{ restaurant.orders.count }}</td>
-            <td>
-                {% if restaurant.note %}
-                {{ restaurant.note }}
-                {% else %}
-                No notes
-                {% endif %}
-            </td>
-
-
-            <td>
-                <!-- DELETE -->
-                <a href="/delete_restaurant/{{ restaurant.id }}">Delete</a>
-            </td>
-        </tr>
-        {% endfor %}
-    </table>
-
-
-
-    <h2>Add Restaurant</h2>
-
-    <form action="/create_restaurant" method="POST">
-        {% csrf_token %}
-
-        <p> Name: </p>
-        <input type="text" name="name">
-
-        <p> Description: </p>
-        <input type="text" name="description">
-
-        <p> Owner ID:: </p>
-        <input type="number" name="owner_id">
-
-        <button type="submit">Add</button>
-    </form>
-
 </body>
 
 </html>

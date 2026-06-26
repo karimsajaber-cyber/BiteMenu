@@ -1,39 +1,178 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Add Item</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
 </head>
 <body>
-    <!-- NavBar -->
-    <div>
-    <a href="/restaurants">Menu</a> |
-    <a href="/my_orders">My Orders</a> |
-    <a href="/logout">Logout</a>
-</div>
+    <div class="page-shell">
+        <header class="topbar">
+            <div class="brand">
+                <div class="brand-mark">BM</div>
+                <div class="brand-copy">
+                    <span>Owner space</span>
+                    <strong>{{ restaurant.name }}</strong>
+                </div>
+            </div>
+            <nav class="nav-links" aria-label="Primary navigation">
+                <a href="/owner_dashboard">Dashboard</a>
+                <a href="/owner/menu">Menu</a>
+                <a href="/my_orders">My Orders</a>
+                <a href="/logout">Logout</a>
+            </nav>
+        </header>
 
-<h1>Add Menu Item</h1>
+        <main class="form-page">
+            <section class="hero form-hero">
+                <div class="eyebrow">Menu Builder</div>
+                <h1>Add menu item</h1>
+                <p class="hero-copy">Create a real menu item with a name, customer price, and available stock.</p>
+            </section>
 
-<!-- ERRORS -->
-{% if messages %}
-    {% for message in messages %}
-        <p style="color:red">{{ message }}</p>
-    {% endfor %}
-{% endif %}
+            <section class="table-shell form-card">
+                {% if messages %}
+                <div class="form-messages">
+                    {% for message in messages %}
+                    <p class="form-message">{{ message }}</p>
+                    {% endfor %}
+                </div>
+                {% endif %}
 
-<form action="/create_item/{{ restaurant_id }}" method="POST">
-    {% csrf_token %}
+                <form class="item-form" action="{% url 'create_menu_item' restaurant.id %}" method="POST">
+                    {% csrf_token %}
 
-    <p> Name: </p> 
-    <input type="text" name="name">
+                    <div class="field-group">
+                        <label for="name">Item name</label>
+                        <input id="name" type="text" name="name" placeholder="Example: Chicken burger" required>
+                    </div>
 
-    <p> Price: </p> 
-    <input type="number" step="0.01" name="price">
 
-    <p> Quantity: </p> 
-    <input type="number" name="quantity">
+                    <div class="field-group">
+                        <label for="price">Price</label>
+                        <input id="price" type="number" step="0.01" min="0.01" name="price" placeholder="9.99" required>
+                    </div>
 
-    <button type="submit">Add Item</button>
-</form>
+                    <div class="field-group">
+                        <label for="quantity">Available quantity</label>
+                        <input id="quantity" type="number" min="0" name="quantity" placeholder="20" required>
+                    </div>
 
+                    <div class="options-builder">
+                        <div class="options-builder-header">
+                            <div>
+                                <h2>Item options</h2>
+                                <p>Add flexible choices only for items that need them, like sizes, meal additions, sauces, or dessert extras.</p>
+                            </div>
+                            <button class="button secondary" type="button" id="add-option-group">Add Option Group</button>
+                        </div>
+
+                        <div class="option-examples">
+                            <span>Use separate groups: Size -> Small +0, Medium +2, Large +4</span>
+                            <span>Use separate groups: Meal option -> Fries + Cola +5</span>
+                            <span>Do not put prices in group names. Put prices only on choices.</span>
+                        </div>
+
+                        <div id="option-groups"></div>
+                    </div>
+
+                    <div class="form-actions">
+                        <button class="button primary" type="submit">Add Item</button>
+                        <a class="button secondary" href="/owner_dashboard">Cancel</a>
+                    </div>
+                </form>
+            </section>
+        </main>
+    </div>
+
+    <template id="option-group-template">
+        <div class="option-group-card" data-group-index="__INDEX__">
+            <input type="hidden" name="option_group_index" value="__INDEX__">
+
+            <div class="option-group-top">
+                <div class="field-group">
+                    <label for="option-group-name-__INDEX__">Group name</label>
+                    <input id="option-group-name-__INDEX__" type="text" name="option_group_name___INDEX__" placeholder="Size, Additions, Toppings">
+                </div>
+                <button class="remove-option-group" type="button">Remove</button>
+            </div>
+
+            <div class="option-group-rules">
+                <label>
+                    <input type="checkbox" name="option_group_required___INDEX__">
+                    Customer must choose at least one
+                </label>
+                <label>
+                    <input type="checkbox" name="option_group_multiple___INDEX__">
+                    Customer can choose multiple
+                </label>
+            </div>
+
+            <div class="option-choices" data-choice-list></div>
+
+            <button class="add-option-choice" type="button">Add Choice</button>
+        </div>
+    </template>
+
+    <template id="option-choice-template">
+        <div class="option-choice-row">
+            <div class="field-group">
+                <label>Choice name</label>
+                <input type="text" name="option_name___INDEX__" placeholder="Medium, Fries + Cola, Extra sauce">
+            </div>
+            <div class="field-group">
+                <label>Extra price</label>
+                <input type="number" step="0.01" min="0" name="option_price___INDEX__" placeholder="0.00">
+            </div>
+            <button class="remove-option-choice" type="button">Remove</button>
+        </div>
+    </template>
+
+    <script>
+        const optionGroups = document.getElementById("option-groups");
+        const addOptionGroupButton = document.getElementById("add-option-group");
+        const groupTemplate = document.getElementById("option-group-template");
+        const choiceTemplate = document.getElementById("option-choice-template");
+        let groupIndex = 0;
+
+        function addChoice(groupCard) {
+            const index = groupCard.dataset.groupIndex;
+            const choiceMarkup = choiceTemplate.innerHTML.replaceAll("__INDEX__", index);
+            const wrapper = document.createElement("div");
+            wrapper.innerHTML = choiceMarkup.trim();
+            groupCard.querySelector("[data-choice-list]").appendChild(wrapper.firstElementChild);
+        }
+
+        function addGroup() {
+            const markup = groupTemplate.innerHTML.replaceAll("__INDEX__", groupIndex);
+            const wrapper = document.createElement("div");
+            wrapper.innerHTML = markup.trim();
+            const groupCard = wrapper.firstElementChild;
+            optionGroups.appendChild(groupCard);
+            addChoice(groupCard);
+            groupIndex += 1;
+        }
+
+        addOptionGroupButton.addEventListener("click", addGroup);
+
+        optionGroups.addEventListener("click", function (event) {
+            const groupCard = event.target.closest(".option-group-card");
+            if (!groupCard) return;
+
+            if (event.target.classList.contains("add-option-choice")) {
+                addChoice(groupCard);
+            }
+
+            if (event.target.classList.contains("remove-option-choice")) {
+                event.target.closest(".option-choice-row").remove();
+            }
+
+            if (event.target.classList.contains("remove-option-group")) {
+                groupCard.remove();
+            }
+        });
+    </script>
 </body>
 </html>

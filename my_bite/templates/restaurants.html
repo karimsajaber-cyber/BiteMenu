@@ -2,13 +2,37 @@
 <html>
 <head>
     <title>Restaurants</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
 </head>
 <body>
-    <!-- NavBar -->
-    <div>
-    <a href="/restaurants">Menu</a> |
+    <h1 style="color:red;">RESTAURANTS PAGE</h1>
+<div>
+{% if request.session.customer_mode %}
+    <!-- CUSTOMER MODE -->
+
+    {% if request.path != '/restaurants' %}
+        <a href="/restaurants">Restaurants</a> |
+    {% endif %}
+
+    <a href="/my_orders">My Orders</a>
+
+{% else %}
+    <!-- OWNER / ADMIN MODE -->
+
+    {% if request.session.role == 'owner' %}
+        <a href="/owner_dashboard">My Restaurant</a> |
+    {% else %}
+        {% if request.path != '/restaurants' %}
+            <a href="/restaurants">Restaurants</a> |
+        {% endif %}
+    {% endif %}
+
     <a href="/my_orders">My Orders</a> |
     <a href="/logout">Logout</a>
+
+{% endif %}
+
 </div>
 
 {% for message in messages %}

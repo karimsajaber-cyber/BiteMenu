@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My_order</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
+</head>
+
+<body>
+    <!-- NavBar -->
+    <div>
+
+        {% if request.session.customer_mode %}
+        <!--  CUSTOMER MODE -->
+        <a href="/restaurants">Restaurants</a> |
+        <a href="/my_orders">My Orders</a>
+
+        {% else %}
+        <!-- OWNER / ADMIN MODE -->
+
+        {% if request.session.role == 'owner' %}
+        <a href="/owner_dashboard">My Restaurant</a> |
+        {% else %}
+        <a href="/restaurants">Restaurants</a> |
+        {% endif %}
+
+        <a href="/my_orders">My Orders</a> |
+        <a href="/logout">Logout</a>
+
+        {% endif %}
+
+    </div>
+
+    {% if request.session.customer_mode %}
+    <form action="/exit_customer_mode" method="POST">
+        {% csrf_token %}
+        <input type="password" name="pin" placeholder="Enter PIN">
+        <button type="submit">Exit Customer Mode</button>
+    </form>
+    {% endif %}
+
+    <h1>My Orders</h1>
+    {% if not orders %}
+    <p>No orders yet</p>
+
+    {% endif %}
+    {% for order in orders %}
+    <div>
+        <p>{{ order.menu_item.name }}</p>
+        {% if order.selected_options.all %}
+        <div class="selected-options">
+            {% for option in order.selected_options.all %}
+            <span>{{ option.option_group_name }}: {{ option.option_name }} (+${{ option.option_price }})</span>
+            {% endfor %}
+        </div>
+        {% endif %}
+        <p>{{ order.status }}</p>
+        <p>Expected Time: {% if order.expected_time %}
+            {% if request.session.customer_mode %}
+            {{ order.expected_time|time:"H:i" }}
+            {% else %}
+            {{ order.expected_time|date:"M d, Y | H:i" }}
+            {% endif %}
+            {% else %}
+            Not set yet
+            {% endif %}</p>
+
+        {% if order.status == 'pending' %}
+        <a href="/cancel_order/{{ order.id }}">Cancel</a>
+        {% endif %}
+    </div>
+    {% endfor %}
+</body>
+
+</html>
